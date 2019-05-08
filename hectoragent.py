@@ -9,15 +9,34 @@
 
 import sys
 import pyfiglet
+import os
+import platform
+# Import modules
+from modules.colors import colors
 
 AGENT_VERSION = '1.0.0'
+
+###############################
+# Class who manages the agent#
+#############################
+class HectorAgent:
+  def __init__(self):
+        print(colors.ORANGE + "Starting hector agent..." + colors.NORMAL)
+
+  def server_platform(self):
+    print(platform.platform())
+
+  # Start the agent
+  def start(self):
+    print(colors.GREEN + 'Hector agent has started!' + colors.NORMAL)
+    self.server_platform()
 
 ##############################
 # Print ascii logo of hector#
 ############################
 def getLogo():
   ascii_logo = pyfiglet.figlet_format("Hector Agent")
-  print(ascii_logo)
+  print(colors.BLUE + ascii_logo + colors.NORMAL)
   print('')
 
 #########################
@@ -39,7 +58,7 @@ def main():
     if sys.argv[1] == 'version':
       print('Agent run on version: ' + AGENT_VERSION)
   else:
-    print('Run agent')
+    HectorAgent().start()
 
-
-main()
+if __name__ == '__main__':
+    main()
