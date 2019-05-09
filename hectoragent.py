@@ -14,6 +14,7 @@ import platform
 # Import modules
 from modules.colors import colors
 from modules.memory import memory
+from modules.swap import swap
 
 AGENT_VERSION = '1.0.0'
 
@@ -31,7 +32,8 @@ class HectorAgent:
   def start(self):
     print(colors.GREEN + 'Hector agent has started!' + colors.NORMAL)
     self.server_platform()
-    #print(memory().collect())
+    #memory().collect()
+    #swap().collect()
 
 ##############################
 # Print ascii logo of hector#
