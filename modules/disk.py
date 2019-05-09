@@ -9,20 +9,22 @@
 
 import psutil
 import os
+import sys
+sys.path.insert(0, '..') # to import helpers from parent folder
+import helpers
 
 class disk:
 
   def collect_overall_disk_usage(self):
     disk_usage = psutil.disk_usage('/')
     result = {
-      'total': (disk_usage.total / (1024.0 ** 3)),
-      'used': (disk_usage.used / (1024.0 ** 3)),
-      'free': (disk_usage.free / (1024.0 ** 3)),
+      'total': (helpers.bytes_to_mb(disk_usage.total)),
+      'used': (helpers.bytes_to_mb(disk_usage.used)),
+      'free': (helpers.bytes_to_mb(disk_usage.free)),
       'percent': disk_usage.percent,
     }
     
     return result
-
 
   def collect_partitions(self):
     disksresult = {}
