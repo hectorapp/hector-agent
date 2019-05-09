@@ -14,10 +14,10 @@ class memory:
   def collect(self):
     data = {}
     memory = psutil.virtual_memory()
-    for index in memory._fields:
-      data[index] = getattr(memory, index)
+    for key in memory._fields:
+      data[key] = getattr(memory, key)
 
-      if index != "percent":
-        data[index] = "{0:.2f}".format(data[index] / 1024.0 ** 2) # Transform bytes to mb
+      if key != "percent":
+        data[key] = "{0:.2f}".format(data[key] / 1024.0 ** 2) # Transform bytes to mb
 
     return data
