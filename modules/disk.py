@@ -12,6 +12,19 @@ import os
 
 class disk:
 
+  def collect_total(self):
+    disk_usage = psutil.disk_usage('/')
+    result = {
+      'total': (disk_usage.total / (1024.0 ** 3)),
+      'used': (disk_usage.used / (1024.0 ** 3)),
+      'free': (disk_usage.free / (1024.0 ** 3)),
+      'percent': disk_usage.percent,
+    }
+
+    print(result)
+    return result
+
+
   def collect_partitions(self):
     disksresult = {}
     disk_partitions = psutil.disk_partitions(all=False)
@@ -39,6 +52,7 @@ class disk:
 
     return disksresult
 
+  '''
   def collect_io(self):
     results = {}
 
@@ -52,3 +66,4 @@ class disk:
       results[device] = device_stats
           
     return results
+    '''

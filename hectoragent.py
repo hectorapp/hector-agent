@@ -32,13 +32,12 @@ class HectorAgent:
 
   # Collect server data
   def collect_data(self):
-    print(self.server_platform())
-    print(disk().collect_partitions())
-    print(disk().collect_io())
+    #self.server_platform()
     #memory().collect()
     #swap().collect()
     #disk().collect_partitions()
-
+    print(disk().collect_total())
+    
   # Start the agent
   def start(self):
     print(colors.GREEN + 'Hector agent has started!' + colors.NORMAL)
