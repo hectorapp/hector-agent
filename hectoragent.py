@@ -33,9 +33,11 @@ class HectorAgent:
   # Collect server data
   def collect_data(self):
     print(self.server_platform())
+    print(disk().collect_partitions())
+    print(disk().collect_io())
     #memory().collect()
     #swap().collect()
-    #disk().collect()
+    #disk().collect_partitions()
 
   # Start the agent
   def start(self):
