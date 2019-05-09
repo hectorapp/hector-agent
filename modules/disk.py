@@ -12,7 +12,7 @@ import os
 
 class disk:
 
-  def collect_total(self):
+  def collect_overall_disk_usage(self):
     disk_usage = psutil.disk_usage('/')
     result = {
       'total': (disk_usage.total / (1024.0 ** 3)),
@@ -20,8 +20,7 @@ class disk:
       'free': (disk_usage.free / (1024.0 ** 3)),
       'percent': disk_usage.percent,
     }
-
-    print(result)
+    
     return result
 
 
