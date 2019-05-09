@@ -36,7 +36,8 @@ class HectorAgent:
     #memory().collect()
     #swap().collect()
     #disk().collect_partitions()
-    print(disk().collect_overall_disk_usage())
+    #disk().collect_overall_disk_usage()
+    print()
     
   # Start the agent
   def start(self):
