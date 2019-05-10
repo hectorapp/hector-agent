@@ -1,19 +1,25 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 '''
  * Author : Hutter Valentin
  * Date : 09.05.2019
  * Description : Diploma work - Hector agent monitoring
  * School : CFPT-I, Geneva, T.IS-E2 A
+ * Help :
+     - https://psutil.readthedocs.io/en/latest/#psutil.disk_io_counters
+     - https://psutil.readthedocs.io/en/latest/#psutil.disk_usage
+     - https://psutil.readthedocs.io/en/latest/#psutil.disk_partitions
 '''
 
 import psutil
 import os
 import sys
+import time
 sys.path.insert(0, '..') # to import helpers from parent folder
 import helpers
 
-class disk:
+class disk():
 
   def collect_overall_disk_usage(self):
     disk_usage = psutil.disk_usage('/')
@@ -53,18 +59,20 @@ class disk:
 
     return disksresult
 
-  '''
   def collect_io(self):
     results = {}
+    disksdata_io = psutil.disk_io_counters(perdisk=True)
 
-    diskdata = psutil.disk_io_counters(perdisk=True)
-    
-    for device, values in diskdata.items():
-      device_stats = {}
-      for key_value in values._fields:
-        device_stats[key_value] = getattr(values, key_value)
-      
-      results[device] = device_stats
+    for key, values in disksdata_io.items():
+      disk_io = disksdata_io[key]
+      results[key] = {
+        'device': key,
+        'read_count': disk_io.read_count,
+        'write_count': disk_io.write_count,
+        'read_mb': "{0:.2f}".format(helpers.bytes_to_mb(disk_io.read_bytes)),
+        'write_mb': "{0:.2f}".format(helpers.bytes_to_mb(disk_io.write_bytes)),
+        'read_time': disk_io.read_time,
+        'write_time': disk_io.write_time,
+      }
           
     return results
-    '''
