@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 '''
  * Author : Hutter Valentin
  * Date : 08.05.2019
  * Description : Diploma work - Hector agent monitoring
  * School : CFPT-I, Geneva, T.IS-E2 A
+ * Help :
+    - https://psutil.readthedocs.io/en/latest/#psutil.virtual_memory
 '''
 
 import psutil
