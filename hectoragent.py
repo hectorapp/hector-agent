@@ -38,8 +38,9 @@ class HectorAgent:
     #swap().collect()
     #disk().collect_partitions()
     #disk().collect_overall_disk_usage()
-    #disk().collect_io(
+    #disk().collect_io()
     #network().collect_network_addrs()
+    print(disk().collect_io())
     
   # Start the agent
   def start(self):

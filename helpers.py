@@ -11,4 +11,7 @@ def bytes_to_mb(nb_bytes):
   return (nb_bytes / (1024 ** 2))
 
 def bytes_to_gb(nb_bytes):
-    return (nb_bytes / (1024 ** 3))
+  return (nb_bytes / (1024 ** 3))
+
+def ms_to_s(nb_ms):
+  return (nb_ms / 1000)
