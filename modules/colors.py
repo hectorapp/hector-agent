@@ -11,6 +11,7 @@
 class colors:
     HEADER = '\033[95m'
     BLUE = '\033[94m'
+    CBLUE = '\33[34m'
     GREEN = '\033[92m'
     ORANGE = '\033[93m'
     RED = '\033[91m'

@@ -52,7 +52,7 @@ class HectorAgent:
 ############################
 def getLogo():
   ascii_logo = pyfiglet.figlet_format("Hector Agent")
-  print(colors.BLUE + ascii_logo + colors.NORMAL)
+  print(colors.CBLUE + ascii_logo + colors.NORMAL)
   print('')
 
 #########################
