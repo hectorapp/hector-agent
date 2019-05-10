@@ -16,6 +16,7 @@ from modules.colors import colors
 from modules.memory import memory
 from modules.swap import swap
 from modules.disk import disk
+from modules.network import network
 
 AGENT_VERSION = '1.0.0'
 
@@ -37,7 +38,8 @@ class HectorAgent:
     #swap().collect()
     #disk().collect_partitions()
     #disk().collect_overall_disk_usage()
-    print()
+    #disk().collect_io(
+    #network().collect_network_addrs()
     
   # Start the agent
   def start(self):
