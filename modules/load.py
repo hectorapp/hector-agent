@@ -20,9 +20,9 @@ class load:
   def collect(self):
     load = psutil.getloadavg()
     data = {
-      '1min': "{0:.2f}".format(load[0]) if len(load) > 0 else None,
-      '5min': "{0:.2f}".format(load[1]) if len(load) > 1 else None,
-      '15min': "{0:.2f}".format(load[2]) if len(load) > 2 else None
+      '1min': "{0:.2f}".format(load[0]),
+      '5min': "{0:.2f}".format(load[1]),
+      '15min': "{0:.2f}".format(load[2])
     }
 
     return data
