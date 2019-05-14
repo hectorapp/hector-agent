@@ -21,7 +21,6 @@ class ping:
 
   def collect(self):
     data = {}
-    response = 0 # 0 equals to a failed response
     servers = {
       'us': 'google.com',
       'ch': '0.ch.pool.ntp.org'
