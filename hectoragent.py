@@ -20,6 +20,7 @@ from modules.network import network
 from modules.load import load
 from modules.process import process
 from modules.ping import ping
+from modules.cpu import cpu
 
 AGENT_VERSION = '1.0.0'
 
@@ -45,7 +46,8 @@ class HectorAgent:
     #network().collect_network_addrs()
     #load().collect()
     #process().collect()
-    print(ping().collect())
+    #ping().collect()
+    print(cpu().collect())
     
   # Start the agent
   def start(self):
