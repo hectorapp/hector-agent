@@ -19,6 +19,7 @@ from modules.disk import disk
 from modules.network import network
 from modules.load import load
 from modules.process import process
+from modules.ping import ping
 
 AGENT_VERSION = '1.0.0'
 
@@ -43,7 +44,8 @@ class HectorAgent:
     #disk().collect_io()
     #network().collect_network_addrs()
     #load().collect()
-    print(process().collect())
+    #process().collect()
+    print(ping().collect())
     
   # Start the agent
   def start(self):
