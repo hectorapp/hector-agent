@@ -20,7 +20,8 @@ import helpers
 class cpu:
 
   def collect(self):
-    cpu_times_percent = psutil.cpu_times_percent(interval=1, percpu=True)
+    cpus_times_percent = psutil.cpu_times_percent(interval=1, percpu=True)
+    cpus_percent = psutil.cpu_percent(interval=1, percpu=True)
     data = {
       'processor_used_pct': psutil.cpu_percent(interval=1),
       'cpus_count': psutil.cpu_count(),
@@ -29,14 +30,17 @@ class cpu:
     
     # Retrieves the use in pourcent of each of the CPUs
     cpu_key = 0
-    for cpu in cpu_times_percent:
-      cpu_key += 1
+    for cpu in cpus_times_percent:
       core = {}
       
       # Transformation of the tuple into a list by keeping the initial keys
       for key in cpu._fields:
         core[key] = getattr(cpu, key)
 
+      # Adding cpu usage foreach core
+      core['usage_pct'] = cpus_percent[cpu_key]
+
+      cpu_key += 1
       data['cpus'][cpu_key] = core
   
     return data
