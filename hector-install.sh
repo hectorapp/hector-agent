@@ -32,6 +32,18 @@ if [ "$1" != "" ]; then
   cp -a $install_dirname/. /etc/hector-agent/ && rm -rf $install_dirname
   # Remove hector-install.sh (useless, already installed)
   rm hector-install.sh
+
+  # Download agent's python dependencies
+  if [ -e /etc/hector-agent/requirements.txt ]; then
+    echo -e "Downloading agent dependencies...";
+    pip3 install -r requirements.txt && echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
+  else
+    echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
+  fi
+
+  # Sucessful installation
+  echo -e "";
+  echo -e "${COLOR_GREEN}Congratulations! Hector's agent has been successfully installed and is now collecting data on the server!${COLOR_NC}";
 else
   echo -e "${COLOR_ORANGE}Unable to install hector, no token has been specified!${COLOR_NC}";
   echo -e "${COLOR_ORANGE}Try: ./hector-install.sh <token>${COLOR_NC}";
