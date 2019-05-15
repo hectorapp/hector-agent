@@ -39,6 +39,7 @@ if [ "$1" != "" ]; then
     pip3 install -r requirements.txt && echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
     echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
+    exit 1
   fi
 
   # Sucessful installation
