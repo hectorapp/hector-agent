@@ -49,3 +49,5 @@ else
   echo -e "${COLOR_ORANGE}Unable to install hector, no token has been specified!${COLOR_NC}";
   echo -e "${COLOR_ORANGE}Try: ./hector-install.sh <token>${COLOR_NC}";
 fi
+
+exit 0
