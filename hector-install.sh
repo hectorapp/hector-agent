@@ -12,6 +12,7 @@
 #       - https://pelaxa.com/blog/2015/03/17/creating-a-service-account-on-os-x-yosemite/
 #   - Explain chmod in detail: https://www.poftut.com/chmod-755-700/
 #   - Edit crontab from script: https://askubuntu.com/questions/880052/how-can-i-change-crontab-dynamically
+#   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
 ########################################################################
 
 
@@ -41,6 +42,47 @@ fi
 ### INSTALLER ###
 if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to /etc/hector-agent...${COLOR_NC}";
+
+  ### Installing python3 if not installed ###
+  if ! command -v python3 &>/dev/null; then
+    # Debian, Ubuntu, etc.
+    if [ -n "$(command -v apt-get)" ]
+		then
+			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
+      apt-get -y update && apt-get install python3
+    # Fedora, CentOS, etc. Red Hat Enterprise Linux
+		elif [ -n "$(command -v yum)" ]
+		then
+      echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
+      yum install python3
+    # OSX
+		elif [[ "$OSTYPE" == "darwin"* ]]
+		then
+      # Retrieves the username of the user who executed the script as root to launch 
+      # the Homebrew installation as non-root (required for security reasons)
+      CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
+
+      if [ ! -n "$(command -v brew)" ]; then
+        echo -e "${COLOR_ORANGE}Installing homebrew...${COLOR_NC}";
+  
+        # Homebrew require xcode packages, so install it
+        if [ ! -n "$(command -v xcode-select)" ]; then
+          echo -e "${COLOR_ORANGE}Installing Apple’s Xcode package...${COLOR_NC}";
+          xcode-select --install
+          echo -e "${COLOR_Green}Apple’s Xcode package is now installed!${COLOR_NC}";
+        fi
+        
+        sudo -u $CURRENT_USER /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null # Redirect to /dev/null to prevent prompt
+        echo -e "${COLOR_ORANGE}Homebrew is now installed!${COLOR_NC}"
+      fi
+
+      # Installing python3 through homebrew
+			echo -e "${COLOR_ORANGE}Installing python3 through 'brew'...${COLOR_NC}"
+		  sudo -u $CURRENT_USER brew install python3
+		fi
+  else
+    echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
+  fi
 
   # Init agent folder
   if [ -d $INSTALLATION_PATH ]; then
