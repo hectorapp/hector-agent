@@ -22,6 +22,10 @@ COLOR_GREEN='\033[92m'
 COLOR_RED='\033[91m'
 COLOR_ORANGE='\033[93m'
 
+# Global variables
+INSTALLATION_PATH="/etc/hector-agent"
+USER="hectoragent"
+
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
 echo -e "Hector agent installation script"
@@ -39,23 +43,22 @@ if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to /etc/hector-agent...${COLOR_NC}";
 
   # Init agent folder
-  if [ ! -d /etc/hector-agent ]; then
-    mkdir -p /etc/hector-agent;
-  else
+  if [ -d $INSTALLATION_PATH ]; then
     # New Install - Delete previous agent
-    rm -rf /etc/hector-agent/*
+    rm -rf $INSTALLATION_PATH/*
   fi
 
+  mkdir -p $INSTALLATION_PATH
   echo -e "";
-  
+
   # Retrieves the agent from the github repository and install it
-  cd /etc/hector-agent && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
+  cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
   # Uncompress downloaded agent, and remove tar.gz
-  tar -zxvf hector-agent.tar.gz && rm /etc/hector-agent/hector-agent.tar.gz
+  tar -zxvf hector-agent.tar.gz && rm $INSTALLATION_PATH/hector-agent.tar.gz
   # Get the the just downloaded archive name (random)
-  install_dirname=`find /etc/hector-agent -name "valh1996-hector-agent-*" -type d`
+  install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
   # Copy the content of uncompressed archive into /etc/hector-agent and remove it
-  cp -a $install_dirname/. /etc/hector-agent && rm -rf $install_dirname
+  cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
   # Remove hector-install.sh (useless, already installed)
   rm hector-install.sh
   
@@ -63,7 +66,7 @@ if [ "$1" != "" ]; then
   echo -e "";
 
   # Download agent's python dependencies
-  if [ -e /etc/hector-agent/requirements.txt ]; then
+  if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
     pip3 install -r requirements.txt && echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
@@ -72,36 +75,52 @@ if [ "$1" != "" ]; then
   fi
 
   # Init logs directory
-  cd /etc/hector-agent && mkdir logs && > crontab.log
+  cd $INSTALLATION_PATH && mkdir logs && cd logs && > crontab.log
 
   # Set API Token
   echo -e "${COLOR_GREEN}Set API Token...${COLOR_NC}";
-  sed -i'' -e "s/.*token.*/token = ${1}/g" /etc/hector-agent/hectoragent.ini
+  sed -i'' -e "s/.*token.*/token = ${1}/g" $INSTALLATION_PATH/hectoragent.ini
 
   # Create unpriviliged user
   echo -e "${COLOR_GREEN}Create new user to run agent...${COLOR_NC}";
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    # Mac OSX
-    dscl . -create /Users/hectoragent
-    dscl . -create /Users/hectoragent uid 300
-    dscl . -create /Users/hectoragent gid 300
-    dscl . -create /Users/hectoragent NFSHomeDirectory /etc/hector-agent
-    dscl . -create /Users/hectoragent UserShell /usr/bin/false # Disable shell
-    dscl . -create /Users/hectoragent RealName "Hector Agent"
-    dscl . -create /Users/hectoragent passwd "*" # Special password linked to the group to prevent logins to the account
+    ## OSX ##
+
+    # Delete previous user if agent is reinstalled
+    if [ `dscl . list /Users | grep -v "^_" | grep $USER` == $USER ]; then
+      echo -e "${COLOR_ORANGE}A hectoragent user already exists, deletes user and creating it again...${COLOR_NC}";
+      dscl . delete /Users/$USER
+      rm -rf /Users/$USER
+    fi
+
+    # Adding hectoragent user
+    dscl . -create /Users/$USER
+    dscl . -create /Users/$USER uid 300
+    dscl . -create /Users/$USER gid 300
+    dscl . -create /Users/$USER NFSHomeDirectory $INSTALLATION_PATH
+    dscl . -create /Users/$USER UserShell /usr/bin/false # Disable shell
+    dscl . -create /Users/$USER RealName "Hector Agent"
+    dscl . -create /Users/$USER passwd "*" # Special password linked to the group to prevent logins to the account
   else
-    # New user named "hectoragent" with /etc/hector-agent home folder and shell login disabled
-    useradd hectoragent -r -d /etc/hector-agent -s /bin/false
+    ## OTHER : LINUX ##
+    if id -u $USER >/dev/null 2>&1
+	  then
+      echo -e "${COLOR_ORANGE}A hectoragent user already exists, deletes user and creating it again...${COLOR_NC}";
+      userdel $USER
+    fi
+
+    # New user named "$USER" with "$INSTALLATION_PATH" home folder and shell login disabled
+    useradd $USER -r -d $INSTALLATION_PATH -s /bin/false
   fi
 
   # Change user permissions
   # User can read, write and execute, but group and others can't do anything
   echo -e "${COLOR_GREEN}Set user permissions...${COLOR_NC}";
-  chown -R hectoragent: /etc/hector-agent && chmod -R 700 /etc/hector-agent
+  chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
   
   # Register agent to crontab
-  cronlines="*/3 * * * * python3 bash /etc/hector-agent/hectoragent.py > /etc/hector-agent/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
-  echo "$cronlines" | crontab -u hectoragent - # Adding lines to crontab
+  cronlines="*/3 * * * * python3 bash $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
+  echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   # Sucessful installation
   echo -e "";
@@ -110,5 +129,14 @@ else
   echo -e "${COLOR_ORANGE}Unable to install hector, no token has been specified!${COLOR_NC}";
   echo -e "${COLOR_ORANGE}Try: ./hector-install.sh <token>${COLOR_NC}";
 fi
+
+# Unsetting variables
+unset COLOR_NC
+unset COLOR_BLUE
+unset COLOR_GREEN
+unset COLOR_RED
+unset COLOR_ORANGE
+unset INSTALLATION_PATH
+unset USER
 
 exit 0
