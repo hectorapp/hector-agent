@@ -121,7 +121,7 @@ if [ "$1" != "" ]; then
 
   # Set API Token
   echo -e "${COLOR_GREEN}Set API Token...${COLOR_NC}";
-  sed -i'' -e "s/.*token.*/token = ${1}/g" $INSTALLATION_PATH/hectoragent.ini
+  sed -i'' -e "s/.*token.*/token = \"${1}\"/g" $INSTALLATION_PATH/hectoragent.ini
 
   # Create unpriviliged user
   echo -e "${COLOR_GREEN}Create new user to run agent...${COLOR_NC}";
