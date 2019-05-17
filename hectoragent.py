@@ -17,6 +17,7 @@ import configparser
 import requests
 import datetime
 import helpers
+import psutil
 # Import modules
 from modules.colors import colors
 from modules.memory import memory
@@ -29,6 +30,7 @@ from modules.ping import ping
 from modules.cpu import cpu
 
 AGENT_VERSION = '1.0.0'
+API_ENDPOOINT = 'http://hector-api.test'
 
 '''
 Class who manages the agent
@@ -60,11 +62,14 @@ class HectorAgent:
       processes = process().collect()
       extern_ping = ping().collect()
       server_cpu = cpu().collect()
+      boot_time = float(psutil.boot_time())
 
       # Sending data to the API
       try:
         print('Sending data to API...')
-        res = requests.post("http://hector-api.test/servers?server_token=" + token, data={
+        res = requests.post(API_ENDPOOINT + "/servers?server_token=" + token, data={
+          'os_fullname': self._server_platform(),
+          'boot_time': boot_time,
           'memory': helpers.dict_to_base64(mem),
           'swap': helpers.dict_to_base64(swap_mem),
           'disk_usage_overall': helpers.dict_to_base64(disk_usage_overall),
@@ -75,9 +80,11 @@ class HectorAgent:
           'processes': helpers.dict_to_base64(processes),
           'extern_ping': helpers.dict_to_base64(extern_ping),
           'cpu': helpers.dict_to_base64(server_cpu),
-          'send_at': datetime.datetime.now(),
+          'request_send_at': datetime.datetime.now().timestamp(),
         })
         
+        print(res.text)
+
         if res.status_code == 200:
           print(colors.GREEN + '\nThe data has been correctly sent to the API!' + colors.NORMAL)
 

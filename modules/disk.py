@@ -53,6 +53,11 @@ class disk():
           diskresult['mountpoint'] = partition.mountpoint
           diskresult['fstype'] = partition.fstype
 
+        # Bytes to mb
+        diskresult['total'] = float("{0:.2f}".format(helpers.bytes_to_mb(diskresult['total'])))
+        diskresult['used'] = float("{0:.2f}".format(helpers.bytes_to_mb(diskresult['used'])))
+        diskresult['free'] = float("{0:.2f}".format(helpers.bytes_to_mb(diskresult['free'])))
+
         disksresult[partition.device] = diskresult # Build the results
       except:
           pass # Ignore exception on disk
@@ -71,8 +76,8 @@ class disk():
         'write_count': disk_io.write_count,
         'read_mb': float("{0:.2f}".format(helpers.bytes_to_mb(disk_io.read_bytes))),
         'write_mb': float("{0:.2f}".format(helpers.bytes_to_mb(disk_io.write_bytes))),
-        'read_time_sec': float("{0:.2f}".format(helpers.ms_to_s(disk_io.read_time))),
-        'write_time_sec': float("{0:.2f}".format(helpers.ms_to_s(disk_io.write_time))),
+        'read_time_sec': disk_io.read_time if float("{0:.2f}".format(helpers.ms_to_s(disk_io.read_time))) else None,
+        'write_time_sec': disk_io.write_time if float("{0:.2f}".format(helpers.ms_to_s(disk_io.write_time))) else None,
       }
           
     return results
