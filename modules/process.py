@@ -33,14 +33,14 @@ class process:
         process['cmdline'] = ' '.join(process['cmdline']).strip() #join args
 
         if 'cpu_percent' in process and process['cpu_percent'] is not None:
-          process['cpu_percent'] = "{0:.2f}".format(process['cpu_percent'])
+          process['cpu_percent'] = float("{0:.2f}".format(process['cpu_percent']))
 
         # Init process memory usage
         if 'memory_percent' in process and process['memory_percent'] is not None:
           # The RAM used by a process is recovered based on the total RAM available for the server where the agent is installed
           total_memory = psutil.virtual_memory().total
-          process['memory_used_mb'] = "{0:.2f}".format(helpers.bytes_to_mb(((total_memory / 100) * process['memory_percent'])))
-          process['memory_percent'] = "{0:.2f}".format(process['memory_percent'])
+          process['memory_used_mb'] = float("{0:.2f}".format(helpers.bytes_to_mb(((total_memory / 100) * process['memory_percent']))))
+          process['memory_percent'] = float("{0:.2f}".format(process['memory_percent']))
   
       except psutil.NoSuchProcess: # https://psutil.readthedocs.io/en/latest/#psutil.NoSuchProcess
         pass

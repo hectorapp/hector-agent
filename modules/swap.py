@@ -24,6 +24,6 @@ class swap:
       data[key] = getattr(swap, key)
 
       if key != "percent":
-        data[key] = "{0:.2f}".format(helpers.bytes_to_mb(data[key])) # Transform bytes to mb
+        data[key] = float("{0:.2f}".format(helpers.bytes_to_mb(data[key]))) # Transform bytes to mb
 
     return data

@@ -60,7 +60,7 @@ class HectorAgent:
       processes = process().collect()
       extern_ping = ping().collect()
       server_cpu = cpu().collect()
-      
+
       # Sending data to the API
       try:
         print('Sending data to API...')

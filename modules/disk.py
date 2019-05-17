@@ -69,10 +69,10 @@ class disk():
         'device': key,
         'read_count': disk_io.read_count,
         'write_count': disk_io.write_count,
-        'read_mb': "{0:.2f}".format(helpers.bytes_to_mb(disk_io.read_bytes)),
-        'write_mb': "{0:.2f}".format(helpers.bytes_to_mb(disk_io.write_bytes)),
-        'read_time_sec': "{0:.2f}".format(helpers.ms_to_s(disk_io.read_time)),
-        'write_time_sec': "{0:.2f}".format(helpers.ms_to_s(disk_io.write_time)),
+        'read_mb': float("{0:.2f}".format(helpers.bytes_to_mb(disk_io.read_bytes))),
+        'write_mb': float("{0:.2f}".format(helpers.bytes_to_mb(disk_io.write_bytes))),
+        'read_time_sec': float("{0:.2f}".format(helpers.ms_to_s(disk_io.read_time))),
+        'write_time_sec': float("{0:.2f}".format(helpers.ms_to_s(disk_io.write_time))),
       }
           
     return results

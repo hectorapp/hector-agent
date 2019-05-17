@@ -42,10 +42,10 @@ class ping:
             data[region] = {
               'host': host,
               'sucessful': True,
-              'minping_sec': "{0:.2f}".format(helpers.ms_to_s(minping)),
-              'avgping_sec': "{0:.2f}".format(helpers.ms_to_s(avgping)),
-              'maxping_sec': "{0:.2f}".format(helpers.ms_to_s(maxping)),
-              'pingstddev_sec': "{0:.2f}".format(helpers.ms_to_s(pingstddev))
+              'minping_sec': float("{0:.2f}".format(helpers.ms_to_s(minping))),
+              'avgping_sec': float("{0:.2f}".format(helpers.ms_to_s(avgping))),
+              'maxping_sec': float("{0:.2f}".format(helpers.ms_to_s(maxping))),
+              'pingstddev_sec': float("{0:.2f}".format(helpers.ms_to_s(pingstddev)))
             }
       except:
         pass

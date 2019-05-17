@@ -30,8 +30,8 @@ class network:
       results[key] = {
         'interface': key,
         'address': values[0].address,
-        'bytes_sent_mb': "{0:.2f}".format(helpers.bytes_to_mb(net_stats.bytes_sent)),
-        'bytes_received_mb': "{0:.2f}".format(helpers.bytes_to_mb(net_stats.bytes_recv)),
+        'bytes_sent_mb': float("{0:.2f}".format(helpers.bytes_to_mb(net_stats.bytes_sent))),
+        'bytes_received_mb': float("{0:.2f}".format(helpers.bytes_to_mb(net_stats.bytes_recv))),
         'packets_sent': net_stats.packets_sent,
         'packets_received': net_stats.packets_recv,
         'err_received': net_stats.errin, # total number of errors while receiving
