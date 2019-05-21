@@ -31,7 +31,7 @@ from modules.ping import ping
 from modules.cpu import cpu
 
 AGENT_VERSION = '1.0.0'
-API_ENDPOOINT = 'http://hector-api.test'
+API_ENDPOINT = 'http://hector-api.test'
 
 '''
 Class who manages the agent
@@ -68,7 +68,7 @@ class HectorAgent:
       # Sending data to the API
       try:
         print('Sending data to API...')
-        res = requests.post(API_ENDPOOINT + "/servers?server_token=" + token, data={
+        res = requests.post(API_ENDPOINT + "/servers?server_token=" + token, data={
           'os_fullname': self._server_platform(),
           'boot_time': boot_time,
           'memory': helpers.dict_to_base64(mem),
