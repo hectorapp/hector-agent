@@ -15,6 +15,7 @@ import os
 import platform
 import configparser
 import requests
+import json
 import datetime
 import helpers
 import psutil
@@ -80,12 +81,10 @@ class HectorAgent:
           'processes': helpers.dict_to_base64(processes),
           'extern_ping': helpers.dict_to_base64(extern_ping),
           'cpu': helpers.dict_to_base64(server_cpu),
-          'request_send_at': datetime.datetime.now().timestamp(),
+          'request_send_at': datetime.datetime.now(),
         })
         
-        print(res.text)
-
-        if res.status_code == 200:
+        if res.status_code == 200 and json.loads(res.text)['success']:
           print(colors.GREEN + '\nThe data has been correctly sent to the API!' + colors.NORMAL)
 
       except requests.exceptions.RequestException:
