@@ -26,6 +26,7 @@ COLOR_ORANGE='\033[93m'
 # Global variables
 INSTALLATION_PATH="/etc/hector-agent"
 USER="hectoragent"
+API_ENDPOINT="http://hector-api.test"
 
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
@@ -69,7 +70,7 @@ if [ "$1" != "" ]; then
         if [ ! -n "$(command -v xcode-select)" ]; then
           echo -e "${COLOR_ORANGE}Installing Apple’s Xcode package...${COLOR_NC}";
           xcode-select --install
-          echo -e "${COLOR_Green}Apple’s Xcode package is now installed!${COLOR_NC}";
+          echo -e "${COLOR_GREEN}Apple’s Xcode package is now installed!${COLOR_NC}";
         fi
         
         sudo -u $CURRENT_USER /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null # Redirect to /dev/null to prevent prompt
@@ -84,8 +85,22 @@ if [ "$1" != "" ]; then
     echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
   fi
 
+  # Test python after install
+  if ! command -v python3 &>/dev/null; then
+    echo -e "${COLOR_RED}Unable to install python3, please restart the installation script or install python3 manually!${COLOR_NC}";
+    exit 1
+  fi
+
   # Init agent folder
   if [ -d $INSTALLATION_PATH ]; then
+    # If an installation is already present, ask the user for confirmation for reinstallation
+    read -p "A Hector installation is already present, do you really want to reinstall it? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]
+    then
+      exit 0
+    fi
+
     # New Install - Delete previous agent
     rm -rf $INSTALLATION_PATH/*
   fi
@@ -164,7 +179,13 @@ if [ "$1" != "" ]; then
   cronlines="*/3 * * * * python3 bash $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
+  ########################
   # Sucessful installation
+  ########################
+
+  # Indicates to the web application that the agent has been installed
+  curl -d "server_token=${1}" -X POST "${API_ENDPOINT}/servers/installed" --silent > /dev/null
+
   echo -e "";
   echo -e "${COLOR_GREEN}Congratulations! Hector's agent has been successfully installed and is now collecting data on the server!${COLOR_NC}";
 else
@@ -180,5 +201,6 @@ unset COLOR_RED
 unset COLOR_ORANGE
 unset INSTALLATION_PATH
 unset USER
+unset API_ENDPOINT
 
 exit 0
