@@ -15,7 +15,6 @@
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
 ########################################################################
 
-
 ### COLORS ###
 COLOR_NC='\033[0m' # Default color
 COLOR_BLUE='\033[94m'
@@ -24,7 +23,7 @@ COLOR_RED='\033[91m'
 COLOR_ORANGE='\033[93m'
 
 # Global variables
-INSTALLATION_PATH="/etc/hector-agent"
+INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="http://hector-api.test"
 
@@ -42,7 +41,7 @@ fi
 
 ### INSTALLER ###
 if [ "$1" != "" ]; then
-  echo -e "${COLOR_ORANGE}Downloading agent to /etc/hector-agent...${COLOR_NC}";
+  echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLTION_PATH}...${COLOR_NC}";
 
   ### Installing python3 if not installed ###
   if ! command -v python3 &>/dev/null; then
@@ -114,7 +113,7 @@ if [ "$1" != "" ]; then
   tar -zxvf hector-agent.tar.gz && rm $INSTALLATION_PATH/hector-agent.tar.gz
   # Get the the just downloaded archive name (random)
   install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
-  # Copy the content of uncompressed archive into /etc/hector-agent and remove it
+  # Copy the content of uncompressed archive into /opt/hector-agent and remove it
   cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
   # Remove hector-install.sh (useless, already installed)
   rm hector-install.sh
@@ -176,7 +175,8 @@ if [ "$1" != "" ]; then
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
   
   # Register agent to crontab
-  cronlines="*/3 * * * * python3 $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
+  PYTHON_PATH=$(which python3)
+  cronlines="*/3 * * * * $PYTHON_PATH $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   ########################
