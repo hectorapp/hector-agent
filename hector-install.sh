@@ -185,6 +185,8 @@ if [ "$1" != "" ]; then
 
   # Indicates to the web application that the agent has been installed
   curl -d "server_token=${1}" -X POST "${API_ENDPOINT}/servers/installed" --silent > /dev/null
+  # Set agent has installed in local
+  sed -i'' -e "s/.*installed.*/installed = yes/g" $INSTALLATION_PATH/hectoragent.ini
 
   echo -e "";
   echo -e "${COLOR_GREEN}Congratulations! Hector's agent has been successfully installed and is now collecting data on the server!${COLOR_NC}";
