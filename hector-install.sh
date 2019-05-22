@@ -176,7 +176,7 @@ if [ "$1" != "" ]; then
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
   
   # Register agent to crontab
-  cronlines="*/3 * * * * python3 bash $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
+  cronlines="*/3 * * * * python3 $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   ########################
