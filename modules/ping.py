@@ -12,7 +12,6 @@
 
 import psutil
 import sys
-import re
 from subprocess import Popen, PIPE
 sys.path.insert(0, '..') # to import helpers from parent folder
 import helpers

@@ -29,6 +29,7 @@ from modules.load import load
 from modules.process import process
 from modules.ping import ping
 from modules.cpu import cpu
+from modules.ip import ip
 
 AGENT_VERSION = '1.0.0'
 API_ENDPOINT = 'http://hector-api.test'
@@ -66,6 +67,7 @@ class HectorAgent:
         extern_ping = ping().collect()
         server_cpu = cpu().collect()
         boot_time = float(psutil.boot_time())
+        servers_ips = ip().collect_ips()
 
         # Sending data to the API
         try:
@@ -83,6 +85,7 @@ class HectorAgent:
             'processes': helpers.dict_to_base64(processes),
             'extern_ping': helpers.dict_to_base64(extern_ping),
             'cpu': helpers.dict_to_base64(server_cpu),
+            'ips': helpers.dict_to_base64(servers_ips),
             'request_send_at': datetime.datetime.now(),
           })
           
