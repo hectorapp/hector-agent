@@ -39,6 +39,14 @@ if [ $(id -u) != "0" ]; then
   exit 1;
 fi
 
+ # If an installation is already present, ask the user for confirmation for reinstallation
+read -p "Do you want to upgrade your system in order to have the last packages? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  apt update && apt upgrade -y
+fi
+
 ### INSTALLER ###
 if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLATION_PATH}...${COLOR_NC}";
@@ -68,7 +76,7 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get -y update && apt-get install python3
+      apt-get install python3
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
