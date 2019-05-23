@@ -117,13 +117,13 @@ if [ "$1" != "" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-      apt-get install python3-dev python3-distutils
+      apt-get install python3-dev python-distutils
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       yum install python3-dev python3-distutils
     fi
-    
+
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py --silent > /dev/null
     python3 get-pip.py
   else
