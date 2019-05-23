@@ -114,17 +114,18 @@ if [ "$1" != "" ]; then
   #######################################
   if ! command -V pip3 &>/dev/null; then
     echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
+
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-      apt-get install python3-dev python-distutils
+      apt-get install python3-dev
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install python3-dev python-distutils
+      yum install python3-devel
     fi
 
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py --silent > /dev/null
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null
     python3 get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
