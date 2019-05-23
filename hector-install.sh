@@ -73,7 +73,8 @@ if [ "$1" != "" ]; then
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y install centos-release-scl && yum -y install rh-python36
+      yum -y install centos-release-scl && yum -y install rh-python36 && scl enable rh-python36 bash
+      ln -fs /usr/bin/python3 /usr/bin/python
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
