@@ -126,7 +126,7 @@ if [ "$1" != "" ]; then
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install -y gcc python3-devel
+      yum install -y gcc python3-devel zlib-devel
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
