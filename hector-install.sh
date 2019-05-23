@@ -75,9 +75,10 @@ if [ "$1" != "" ]; then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
       yum -y install gcc # need gcc to compile python from its source
       wget -q https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
-      gunzip Python-3.7.3.tgz && tar -xvf Python-3.7.3.tar
+      gunzip Python-3.7.3.tgz && tar -xvf Python-3.7.3.tar && rm Python-3.7.3.tar
       cd Python-3.7.3 && ./configure -prefix=/usr/local/ && sudo make altinstall
-      sudo ln -s /usr/local/bin/python3.7 /usr/bin/python3
+      cd .. && rm -rf Python-3.7.3
+      sudo ln -s /usr/local/bin/python3.7 /usr/bin/python3 # Symlink to python3 command
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -130,6 +131,7 @@ if [ "$1" != "" ]; then
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
+    rm get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
