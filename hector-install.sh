@@ -122,11 +122,11 @@ if [ "$1" != "" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-      apt-get install gcc python3-dev
+      apt-get install gcc python3-dev -y
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install gcc python3-devel
+      yum install -y gcc python3-devel
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
@@ -143,11 +143,11 @@ if [ "$1" != "" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-      apt-get install dnsutils
+      apt-get install dnsutils -y
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install yum install bind-utils
+      yum -y install yum install bind-utils
     elif [[ "$OSTYPE" == "darwin"* ]]
 		then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
