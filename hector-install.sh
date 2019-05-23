@@ -68,12 +68,12 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get install python3
+      apt-get install python3 -y
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum install python3
+      yum -y install centos-release-scl && yum -y install rh-python36
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -128,6 +128,29 @@ if [ "$1" != "" ]; then
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
+  fi
+
+  #########################################
+  ###          Install dig             ###
+  #######################################
+  if ! command -v dig &>/dev/null; then
+    echo -e "${COLOR_ORANGE}Installing dig...${COLOR_NC}";
+
+    # Debian, Ubuntu, etc.
+    if [ -n "$(command -v apt-get)" ]
+		then
+      apt-get install dnsutils
+    # Fedora, CentOS, etc. Red Hat Enterprise Linux
+		elif [ -n "$(command -v yum)" ]
+		then
+      yum install yum install bind-utils
+    elif [[ "$OSTYPE" == "darwin"* ]]
+		then
+      CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
+      sudo -u $CURRENT_USER brew install bind
+    fi
+  else
+    echo -e "${COLOR_GREEN}dig is already installed!${COLOR_NC}";
   fi
 
   # Retrieves the agent from the github repository and install it
