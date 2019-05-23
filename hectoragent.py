@@ -32,7 +32,7 @@ from modules.cpu import cpu
 from modules.ip import ip
 
 AGENT_VERSION = '1.0.0'
-API_ENDPOINT = 'http://hector-api.test'
+API_ENDPOINT = 'https://hectorapi.valentinhutter.ch'
 
 '''
 Class who manages the agent

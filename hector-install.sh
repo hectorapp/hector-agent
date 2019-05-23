@@ -25,7 +25,7 @@ COLOR_ORANGE='\033[93m'
 # Global variables
 INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
-API_ENDPOINT="http://hector-api.test"
+API_ENDPOINT="https://hectorapi.valentinhutter.ch"
 
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
@@ -37,14 +37,6 @@ echo -e "${COLOR_NC}"
 if [ $(id -u) != "0" ]; then
   echo -e "${COLOR_RED}Please run the install script as root. No worries, a new unprivileged user will be created just to run the agent itself.${COLOR_NC}"; 
   exit 1;
-fi
-
- # If an installation is already present, ask the user for confirmation for reinstallation
-read -p "Do you want to upgrade your system in order to have the last packages? [y/n] " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-  apt update && apt upgrade -y
 fi
 
 ### INSTALLER ###
@@ -126,13 +118,11 @@ if [ "$1" != "" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-      apt-get install python3-dev -y
-      apt-get install python3-distutils -y
+      apt-get install gcc python3-dev
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install python3-devel -y
-      yum install python3-distutils -y
+      yum install gcc python3-devel
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
