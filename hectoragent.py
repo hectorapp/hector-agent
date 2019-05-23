@@ -72,7 +72,7 @@ class HectorAgent:
         # Sending data to the API
         try:
           print('Sending data to API...')
-          res = requests.post(API_ENDPOINT + "/servers?server_token=" + token, data={
+          res = requests.post(API_ENDPOINT + "/servers/sendmonitoring?server_token=" + token, data={
             'os_fullname': self._server_platform(),
             'boot_time': boot_time,
             'memory': helpers.dict_to_base64(mem),
