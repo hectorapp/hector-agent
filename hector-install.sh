@@ -43,7 +43,9 @@ fi
 if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLTION_PATH}...${COLOR_NC}";
 
+  ############################################
   ### Installing python3 if not installed ###
+  ##########################################
   if ! command -v python3 &>/dev/null; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
@@ -88,6 +90,16 @@ if [ "$1" != "" ]; then
   if ! command -v python3 &>/dev/null; then
     echo -e "${COLOR_RED}Unable to install python3, please restart the installation script or install python3 manually!${COLOR_NC}";
     exit 1
+  fi
+
+  #########################################
+  ### Installing pip3 if not installed ###
+  #######################################
+  if ! command -V pip3 &>/dev/null; then
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    python3 get-pip.py
+  else
+    echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
 
   # Init agent folder
