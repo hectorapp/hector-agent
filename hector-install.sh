@@ -41,7 +41,24 @@ fi
 
 ### INSTALLER ###
 if [ "$1" != "" ]; then
-  echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLTION_PATH}...${COLOR_NC}";
+  echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLATION_PATH}...${COLOR_NC}";
+
+  # Init agent folder
+  if [ -d $INSTALLATION_PATH ]; then
+    # If an installation is already present, ask the user for confirmation for reinstallation
+    read -p "A Hector installation is already present, do you really want to reinstall it? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]
+    then
+      exit 0
+    fi
+
+    # New Install - Delete previous agent
+    rm -rf $INSTALLATION_PATH/*
+  fi
+
+  mkdir -p $INSTALLATION_PATH
+  echo -e "";
 
   ############################################
   ### Installing python3 if not installed ###
@@ -96,28 +113,21 @@ if [ "$1" != "" ]; then
   ### Installing pip3 if not installed ###
   #######################################
   if ! command -V pip3 &>/dev/null; then
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
+    # Debian, Ubuntu, etc.
+    if [ -n "$(command -v apt-get)" ]
+		then
+      apt-get install python3-dev python3-distutils
+    # Fedora, CentOS, etc. Red Hat Enterprise Linux
+		elif [ -n "$(command -v yum)" ]
+		then
+      yum install python3-dev python3-distutils
+
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py --silent > /dev/null
     python3 get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
-
-  # Init agent folder
-  if [ -d $INSTALLATION_PATH ]; then
-    # If an installation is already present, ask the user for confirmation for reinstallation
-    read -p "A Hector installation is already present, do you really want to reinstall it? [y/n] " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Nn]$ ]]
-    then
-      exit 0
-    fi
-
-    # New Install - Delete previous agent
-    rm -rf $INSTALLATION_PATH/*
-  fi
-
-  mkdir -p $INSTALLATION_PATH
-  echo -e "";
 
   # Retrieves the agent from the github repository and install it
   cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
