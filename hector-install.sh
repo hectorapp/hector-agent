@@ -28,18 +28,13 @@ INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
 PYTHON_VERSION="3.7.3"
-PYENV=$(which pyenv)
 
-# Welcome text
-echo -e "${COLOR_BLUE}================================="
-echo -e "Hector agent installation script"
-echo -e "================================="
-echo -e "${COLOR_NC}"
+# Loading pyenv
+pyenv_pre=$(which pyenv)
 
-# Check that the installer is running as root
-if [ $(id -u) != "0" ]; then
-  echo -e "${COLOR_RED}Please run the install script as root. No worries, a new unprivileged user will be created just to run the agent itself.${COLOR_NC}"; 
-  exit 1;
+if [ $pyenv_pre="$HOME/.pyenv/bin/pyenv" ]
+  then PYENV=$pyenv_pre
+  else PYENV="$HOME/.pyenv/bin/pyenv"
 fi
 
 #############################
@@ -51,6 +46,20 @@ install_pyenv_linux_distribution () {
   SCRIPT_URL=https://github.com/pyenv/$PROJ/raw/master/bin/$PROJ
   curl -L $SCRIPT_URL < /dev/null | bash
 }
+
+#############################
+###  WELCOME TEXT SCRIPT  ###
+#############################
+echo -e "${COLOR_BLUE}================================="
+echo -e "Hector agent installation script"
+echo -e "================================="
+echo -e "${COLOR_NC}"
+
+# Check that the installer is running as root
+if [ $(id -u) != "0" ]; then
+  echo -e "${COLOR_RED}Please run the install script as root. No worries, a new unprivileged user will be created just to run the agent itself.${COLOR_NC}"; 
+  exit 1;
+fi
 
 #############################
 ###       INSTALLER       ###
@@ -148,6 +157,14 @@ if [ "$1" != "" ]; then
   if ! command -v $PYENV &>/dev/null; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
+  fi
+
+  # Load pyenv after install
+  pyenv_pre=$(which pyenv)
+
+  if [ $pyenv_pre="$HOME/.pyenv/bin/pyenv" ]
+    then PYENV=$pyenv_pre
+    else PYENV="$HOME/.pyenv/bin/pyenv"
   fi
 
   #########################################
