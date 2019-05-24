@@ -13,6 +13,7 @@
 #   - Explain chmod in detail: https://www.poftut.com/chmod-755-700/
 #   - Edit crontab from script: https://askubuntu.com/questions/880052/how-can-i-change-crontab-dynamically
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
+#   - Pyenv : https://github.com/pyenv/pyenv
 ########################################################################
 
 ### COLORS ###
@@ -26,6 +27,7 @@ COLOR_ORANGE='\033[93m'
 INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
+PYTHON_VERSION="3.7.3"
 
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
@@ -39,7 +41,24 @@ if [ $(id -u) != "0" ]; then
   exit 1;
 fi
 
-### INSTALLER ###
+#############################
+### FUNCTIONS DECLARATION ###
+#############################
+install_pyenv_linux_distribution() {
+  # Download pyenv
+  PROJ=pyenv-installer
+  SCRIPT_URL=https://github.com/pyenv/$PROJ/raw/master/bin/$PROJ
+  curl -L $SCRIPT_URL < /dev/null | bash
+  
+  # Setup it
+  export PATH="~/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+}
+
+#############################
+###       INSTALLER       ###
+#############################
 if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLATION_PATH}...${COLOR_NC}";
 
@@ -61,24 +80,42 @@ if [ "$1" != "" ]; then
   echo -e "";
 
   ############################################
-  ### Installing python3 if not installed ###
+  ### Installing pyenv if not installed ###
   ##########################################
-  if ! command -v python3 &>/dev/null; then
+  if ! command -v pyenv &>/dev/null; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
-			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get install python3 -y
+			echo -e "${COLOR_ORANGE}Installing pyenv through 'apt-get'...${COLOR_NC}";
+      # Installing pyenv required libraries for Ubuntu/Debian
+      sudo apt-get install -y \
+        libbz2-dev \
+        libsqlite3-dev \
+        llvm \
+        libncurses5-dev \
+        libncursesw5-dev \
+        tk-dev \
+        liblzma-dev
+
+      install_pyenv_linux_distribution
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y install gcc # need gcc to compile python from its source
-      wget -q https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
-      gunzip Python-3.7.3.tgz && tar -xvf Python-3.7.3.tar && rm Python-3.7.3.tar
-      cd Python-3.7.3 && ./configure -prefix=/usr/local/ && sudo make altinstall
-      cd .. && rm -rf Python-3.7.3
-      sudo ln -s /usr/local/bin/python3.7 /usr/bin/python3 # Symlink to python3 command
+      echo -e "${COLOR_ORANGE}Installing pyenv through 'yum'...${COLOR_NC}";
+      # Installing pyenv required libraries for "Red Hat distribuation"
+      sudo yum install \
+        zlib-devel \
+        bzip2 \
+        bzip2-devel \
+        readline-devel \
+        sqlite \
+        sqlite-devel \
+        openssl-devel \
+        xz \
+        xz-devel \
+        libffi-devel
+      
+      install_pyenv_linux_distribution
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -100,20 +137,38 @@ if [ "$1" != "" ]; then
         echo -e "${COLOR_ORANGE}Homebrew is now installed!${COLOR_NC}"
       fi
 
-      # Installing python3 through homebrew
-			echo -e "${COLOR_ORANGE}Installing python3 through 'brew'...${COLOR_NC}"
-		  sudo -u $CURRENT_USER brew install python3
+      # Installing pyenv through homebrew
+			echo -e "${COLOR_ORANGE}Installing pyenv through 'brew'...${COLOR_NC}"
+
+		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv
+      export PATH="~/.pyenv/bin:$PATH"
+      eval "$(pyenv init -)"
+      eval "$(pyenv virtualenv-init -)"
 		fi
   else
-    echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
+    echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
   fi
 
   # Test python after install
-  if ! command -v python3 &>/dev/null; then
-    echo -e "${COLOR_RED}Unable to install python3, please restart the installation script or install python3 manually!${COLOR_NC}";
+  if ! command -v pyenv &>/dev/null; then
+    echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
 
+  #########################################
+  ###    Installing python version     ###
+  #######################################
+  osx_version=$(awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | awk '{print substr($0, 0, length($0))}')
+  if [ $osx_version == "Mojave" ]
+  then
+    # Prevent build failed when installing multi-version of python on MOJAVE
+    # Help : http://www.blog.howechen.com/macos-mojave-pyenv-install-multi-version-build-failed-solution/
+    echo -e "${COLOR_ORANGE}Installing sdk-headers for osx... (to prevents build failed with python multi-versions)${COLOR_NC}";
+    installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+  fi
+
+  pyenv install $PYTHON_VERSION
+  
   #########################################
   ### Installing pip3 if not installed ###
   #######################################
@@ -127,7 +182,7 @@ if [ "$1" != "" ]; then
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum install -y gcc python3-devel zlib-devel
+      yum install -y gcc zlib-devel
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
@@ -159,37 +214,9 @@ if [ "$1" != "" ]; then
     echo -e "${COLOR_GREEN}dig is already installed!${COLOR_NC}";
   fi
 
-  # Retrieves the agent from the github repository and install it
-  cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
-  # Uncompress downloaded agent, and remove tar.gz
-  tar -zxvf hector-agent.tar.gz && rm $INSTALLATION_PATH/hector-agent.tar.gz
-  # Get the the just downloaded archive name (random)
-  install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
-  # Copy the content of uncompressed archive into /opt/hector-agent and remove it
-  cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
-  # Remove hector-install.sh (useless, already installed)
-  rm hector-install.sh
-  
-  echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
-  echo -e "";
-
-  # Download agent's python dependencies
-  if [ -e $INSTALLATION_PATH/requirements.txt ]; then
-    echo -e "Downloading agent dependencies...";
-    pip3 install -r requirements.txt && echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
-  else
-    echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
-    exit 1
-  fi
-
-  # Init logs directory
-  cd $INSTALLATION_PATH && mkdir logs && cd logs && > crontab.log
-
-  # Set API Token
-  echo -e "${COLOR_GREEN}Set API Token...${COLOR_NC}";
-  sed -i'' -e "s/.*token.*/token = \"${1}\"/g" $INSTALLATION_PATH/hectoragent.ini
-
-  # Create unpriviliged user
+  #########################################
+  ###   Create unpriviliged user       ###
+  #######################################
   echo -e "${COLOR_GREEN}Create new user to run agent...${COLOR_NC}";
   if [[ "$OSTYPE" == "darwin"* ]]; then
     ## OSX ##
@@ -221,13 +248,46 @@ if [ "$1" != "" ]; then
     useradd $USER -r -d $INSTALLATION_PATH -s /bin/false
   fi
 
+  # Retrieves the agent from the github repository and install it
+  cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
+  # Uncompress downloaded agent, and remove tar.gz
+  tar -zxvf hector-agent.tar.gz && rm $INSTALLATION_PATH/hector-agent.tar.gz
+  # Get the the just downloaded archive name (random)
+  install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
+  # Copy the content of uncompressed archive into /opt/hector-agent and remove it
+  cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
+  # Remove hector-install.sh (useless, already installed)
+  rm hector-install.sh
+  
+  echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
+  echo -e "";
+
+  # Set python local version
+  sudo -u $USER pyenv local $PYTHON_VERSION
+
+  # Download agent's python dependencies
+  if [ -e $INSTALLATION_PATH/requirements.txt ]; then
+    echo -e "Downloading agent dependencies...";
+    pip3 install -r requirements.txt && echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
+  else
+    echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
+    exit 1
+  fi
+
+  # Init logs directory
+  cd $INSTALLATION_PATH && mkdir logs && cd logs && > crontab.log
+
+  # Set API Token
+  echo -e "${COLOR_GREEN}Set API Token...${COLOR_NC}";
+  sed -i'' -e "s/.*token.*/token = \"${1}\"/g" $INSTALLATION_PATH/hectoragent.ini
+
   # Change user permissions
   # User can read, write and execute, but group and others can't do anything
   echo -e "${COLOR_GREEN}Set user permissions...${COLOR_NC}";
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
-  
+
   # Register agent to crontab
-  PYTHON_PATH=$(which python3)
+  PYTHON_PATH=$(cd $INSTALLATION_PATH && pyenv which python3)
   cronlines="*/3 * * * * $PYTHON_PATH $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
@@ -256,5 +316,6 @@ unset COLOR_ORANGE
 unset INSTALLATION_PATH
 unset USER
 unset API_ENDPOINT
+unset PYTHON_VERSION
 
 exit 0
