@@ -160,15 +160,18 @@ if [ "$1" != "" ]; then
   #########################################
   ###    Installing python version     ###
   #######################################
-  osx_version=$(awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | awk '{print substr($0, 0, length($0))}')
-  if [ $osx_version == "Mojave" ]
-  then
-    # Prevent build failed when installing multi-version of python on MOJAVE
-    # Help : http://www.blog.howechen.com/macos-mojave-pyenv-install-multi-version-build-failed-solution/
-    echo -e "${COLOR_ORANGE}Installing sdk-headers for osx... (to prevents build failed with python multi-versions)${COLOR_NC}";
-    installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+  if [[ "$OSTYPE" == "darwin"* ]]
+	then
+    osx_version=$(awk '/SOFTWARE LICENSE AGREEMENT FOR macOS/' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | awk '{print substr($0, 0, length($0))}')
+    if [ $osx_version == "Mojave" ]
+    then
+      # Prevent build failed when installing multi-version of python on MOJAVE
+      # Help : http://www.blog.howechen.com/macos-mojave-pyenv-install-multi-version-build-failed-solution/
+      echo -e "${COLOR_ORANGE}Installing sdk-headers for osx... (to prevents build failed with python multi-versions)${COLOR_NC}";
+      installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+    fi
   fi
-
+  
   pyenv install $PYTHON_VERSION
   
   #########################################
