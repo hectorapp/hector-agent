@@ -148,15 +148,14 @@ if [ "$1" != "" ]; then
   fi &&
 
   # Load pyenv after install
-  pyenv_check=$(which pyenv)
+  pyenv_check=$(which pyenv | sed 's/[[:blank:]]//g')
 
-  if [ $pyenv_pre="$HOME/.pyenv/bin/pyenv" ]
+  if [ $pyenv_check="$HOME/.pyenv/bin/pyenv" ]
     then PYENV=$pyenv_pre
     else PYENV="$HOME/.pyenv/bin/pyenv"
   fi
   
-  # Test python after install
-  if [ -z "${pyenv_check}" ]; then
+  if [ -z "${pyenv_check}" ] || [[ $pyenv_check == *"no pyenv"* ]]; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
