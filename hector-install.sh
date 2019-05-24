@@ -123,7 +123,7 @@ if [ "$1" != "" ]; then
         git
       
       install_pyenv_linux_distribution
-      add_pyenv_to_shell ~/.bash_profile
+      add_pyenv_to_shell ~/.bashrc
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
