@@ -27,7 +27,7 @@ COLOR_ORANGE='\033[93m'
 INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
-PYTHON_VERSION="3.7.3"
+PYTHON_VERSION=`3.7.3`
 
 #############################
 ### FUNCTIONS DECLARATION ###
@@ -176,7 +176,8 @@ if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Installing Python $PYTHON_VERSION... ${COLOR_NC}";
   $PYENV install $PYTHON_VERSION
   # Set python local version
-  cd $INSTALLATION_PATH && $PYENV local $PYTHON_VERSION
+  cd $INSTALLATION_PATH
+  $PYENV `local` $PYTHON_VERSION
 
   #########################################
   ### Installing pip3 if not installed ###
