@@ -87,7 +87,7 @@ if [ "$1" != "" ]; then
   ############################################
   ### Installing pyenv if not installed ###
   ##########################################
-  if ! command -v $PYENV &>/dev/null; then
+  if [ -z ${PYENV+x} ] || [ ! command -v $PYENV &>/dev/null ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
@@ -154,7 +154,7 @@ if [ "$1" != "" ]; then
   fi
 
   # Test python after install
-  if ! command -v $PYENV &>/dev/null; then
+  if [ -z ${PYENV+x} ] || [ ! command -v $PYENV &>/dev/null ]; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
