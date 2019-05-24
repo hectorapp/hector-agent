@@ -44,7 +44,7 @@ fi
 #############################
 ### FUNCTIONS DECLARATION ###
 #############################
-install_pyenv_linux_distribution() {
+install_pyenv_linux_distribution () {
   # Download pyenv
   PROJ=pyenv-installer
   SCRIPT_URL=https://github.com/pyenv/$PROJ/raw/master/bin/$PROJ
@@ -103,7 +103,7 @@ if [ "$1" != "" ]; then
 		then
       echo -e "${COLOR_ORANGE}Installing pyenv through 'yum'...${COLOR_NC}";
       # Installing pyenv required libraries for "Red Hat distribuation"
-      sudo yum install \
+      sudo yum install -y \
         zlib-devel \
         bzip2 \
         bzip2-devel \
