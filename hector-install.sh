@@ -43,6 +43,7 @@ add_pyenv_to_shell () {
   echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $1
   echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $1
   echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $1
+  exec $SHELL
 }
 
 #############################
