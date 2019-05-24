@@ -44,19 +44,11 @@ fi
 #############################
 ### FUNCTIONS DECLARATION ###
 #############################
-install_pyenv_variables () {
-  export PATH="~/.pyenv/bin:$PATH"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
-}
-
 install_pyenv_linux_distribution () {
   # Download pyenv
   PROJ=pyenv-installer
   SCRIPT_URL=https://github.com/pyenv/$PROJ/raw/master/bin/$PROJ
   curl -L $SCRIPT_URL < /dev/null | bash
-
-  install_pyenv_variables
 }
 
 #############################
@@ -146,7 +138,6 @@ if [ "$1" != "" ]; then
 			echo -e "${COLOR_ORANGE}Installing pyenv through 'brew'...${COLOR_NC}"
 
 		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv git
-      install_pyenv_variables
 		fi
   else
     echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
@@ -157,6 +148,8 @@ if [ "$1" != "" ]; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
+
+  $PYENV=$(which pyenv)
 
   #########################################
   ###    Installing python version     ###
@@ -173,7 +166,7 @@ if [ "$1" != "" ]; then
     fi
   fi
 
-  pyenv install $PYTHON_VERSION
+  $PYENV install $PYTHON_VERSION
   
   #########################################
   ### Installing pip3 if not installed ###
@@ -269,7 +262,7 @@ if [ "$1" != "" ]; then
   echo -e "";
 
   # Set python local version
-  sudo -u $USER pyenv local $PYTHON_VERSION
+  sudo -u $USER $PYENV local $PYTHON_VERSION
 
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
@@ -323,5 +316,6 @@ unset INSTALLATION_PATH
 unset USER
 unset API_ENDPOINT
 unset PYTHON_VERSION
+unset $PYENV
 
 exit 0
