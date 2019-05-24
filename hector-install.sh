@@ -154,8 +154,8 @@ if [ "$1" != "" ]; then
   # Load pyenv after install
   PYENV=$(which pyenv | sed 's/[[:blank:]]//g')
 
-  if [ -z ${PYENV} ]; then
-    PYENV="$HOME/.pyenv/bin/pyenv"
+  if [ -e ${PYENV} ]; then
+    PYENV="~/.pyenv/bin/pyenv"
   fi
 
   #########################################
@@ -173,8 +173,11 @@ if [ "$1" != "" ]; then
     fi
   fi
 
+  echo -e "${COLOR_ORANGE}Installing Python $PYTHON_VERSION... ${COLOR_NC}";
   $PYENV install $PYTHON_VERSION
-  
+  # Set python local version
+  cd $INSTALLATION_PATH && $PYENV local $PYTHON_VERSION
+
   #########################################
   ### Installing pip3 if not installed ###
   #######################################
@@ -191,7 +194,7 @@ if [ "$1" != "" ]; then
       yum install -y gcc zlib-devel
     fi
 
-    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
+    cd $INSTALLATION_PATH && curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
     rm -rf get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
@@ -269,9 +272,6 @@ if [ "$1" != "" ]; then
   
   echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
   echo -e "";
-
-  # Set python local version
-  sudo -u $USER $PYENV local $PYTHON_VERSION
 
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
