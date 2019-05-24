@@ -148,7 +148,7 @@ if [ "$1" != "" ]; then
   fi &&
 
   # Load pyenv after install
-  pyenv_pre=$(which pyenv)
+  pyenv_check=$(which pyenv)
 
   if [ $pyenv_pre="$HOME/.pyenv/bin/pyenv" ]
     then PYENV=$pyenv_pre
