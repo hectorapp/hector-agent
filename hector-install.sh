@@ -39,6 +39,12 @@ install_pyenv_linux_distribution () {
   curl -L $SCRIPT_URL < /dev/null | bash
 }
 
+add_pyenv_to_shell () {
+  echo 'export PYENV_ROOT="$HOME/.pyenv"' >> $1
+  echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> $1
+  echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> $1
+}
+
 #############################
 ###  WELCOME TEXT SCRIPT  ###
 #############################
@@ -97,6 +103,7 @@ if [ "$1" != "" ]; then
         git
 
       install_pyenv_linux_distribution
+      add_pyenv_to_shell ~/.bash_profile
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
@@ -116,6 +123,7 @@ if [ "$1" != "" ]; then
         git
       
       install_pyenv_linux_distribution
+      add_pyenv_to_shell ~/.bash_profile
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -141,6 +149,7 @@ if [ "$1" != "" ]; then
 			echo -e "${COLOR_ORANGE}Installing pyenv through 'brew'...${COLOR_NC}"
 
 		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv git
+      add_pyenv_to_shell ~/.bash_profile
 		fi
   else
     echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
@@ -162,7 +171,7 @@ if [ "$1" != "" ]; then
     if [ $osx_version == "Mojave" ]
     then
       echo -e "${COLOR_ORANGE}Installing sdk-headers for osx... (to prevents build failed with python multi-versions)${COLOR_NC}";
-      #installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+      installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
     fi
   fi
 
@@ -282,7 +291,7 @@ if [ "$1" != "" ]; then
   # Change user permissions
   # User can read, write and execute, but group and others can't do anything
   echo -e "${COLOR_GREEN}Set user permissions...${COLOR_NC}";
-  chown -R valentinhutter: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
+  chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
 
   # Register agent to crontab
   cronlines="*/3 * * * * bash $INSTALLATION_PATH/run.sh 2>&1" # Redirect standard error (stderr) to crontab.log
