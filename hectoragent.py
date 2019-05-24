@@ -68,8 +68,6 @@ class HectorAgent:
         server_cpu = cpu().collect()
         boot_time = float(psutil.boot_time())
         servers_ips = ip().collect_ips()
-        print(servers_ips)
-        sys.exit()
         
         # Sending data to the API
         try:
