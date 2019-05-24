@@ -256,6 +256,8 @@ if [ "$1" != "" ]; then
   cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
   # Remove hector-install.sh (useless, already installed)
   rm -rf hector-install.sh
+  # Make script executable
+  chmod +x run.sh
   
   echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
   echo -e "";
