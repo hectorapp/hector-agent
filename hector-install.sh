@@ -209,7 +209,7 @@ if [ "$1" != "" ]; then
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum -y install yum install bind-utils
+      yum -y install bind-utils
     elif [[ "$OSTYPE" == "darwin"* ]]
 		then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
