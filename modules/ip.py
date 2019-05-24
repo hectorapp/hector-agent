@@ -7,7 +7,9 @@
  * Description : Diploma work - Hector agent monitoring
  * School : CFPT-I, Geneva, T.IS-E2 A
  * Help :
-    - Get public ip with DNS server : https://www.cyberciti.biz/faq/how-to-find-my-public-ip-address-from-command-line-on-a-linux/
+    - Get public ip with DNS server : 
+      - https://www.cyberciti.biz/faq/how-to-find-my-public-ip-address-from-command-line-on-a-linux/
+      - https://unix.stackexchange.com/questions/477705/resolve-my-ip-with-dig-returns-empty-string
     - Linux IP : https://stackoverflow.com/questions/21336126/linux-bash-script-to-extract-ip-address
 '''
 
@@ -39,7 +41,7 @@ class ip:
 
   def public_ip(self):
     # Using a DNS server to retrieve the public IP
-    return self._exec_command_ip('dig +short myip.opendns.com @resolver1.opendns.com', False)
+    return self._exec_command_ip('dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com', False)
 
   def private_ip(self):
     command = ''
@@ -48,7 +50,7 @@ class ip:
     if psutil.MACOS:
       command = 'ipconfig getifaddr en0'
     else:
-      command = 'hostname -I | awk \'{ print $1 }\''
+      command = "hostname -I | awk '{ print $1 }'"
 
     return self._exec_command_ip(command, True)
 
