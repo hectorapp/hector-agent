@@ -155,7 +155,7 @@ if [ "$1" != "" ]; then
   PYENV=$(which pyenv | sed 's/[[:blank:]]//g')
 
   if [ -z ${PYENV} ]; then
-    PYENV="~/.pyenv/bin/pyenv"
+    PYENV=`~/.pyenv/bin/pyenv`
   fi
 
   #########################################
