@@ -154,7 +154,7 @@ if [ "$1" != "" ]; then
   # Load pyenv after install
   PYENV=$(which pyenv | sed 's/[[:blank:]]//g')
 
-  if [ -e ${PYENV} ]; then
+  if [ -f ${PYENV} ]; then
     PYENV="~/.pyenv/bin/pyenv"
   fi
 
