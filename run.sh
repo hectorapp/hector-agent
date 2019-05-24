@@ -13,7 +13,7 @@ PYTHON_VERSION="3.7.3"
 
 $PYENV init -
 $PYENV virtualenv-init -
-$PYENV local 3.7.3
+$PYENV local $PYTHON_VERSION
 python3 hectoragent.py
 
 unset PYENV
