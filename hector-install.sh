@@ -28,6 +28,7 @@ INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
 PYTHON_VERSION="3.7.3"
+PYENV=$(which pyenv)
 
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
@@ -77,7 +78,7 @@ if [ "$1" != "" ]; then
   ############################################
   ### Installing pyenv if not installed ###
   ##########################################
-  if ! command -v pyenv &>/dev/null; then
+  if ! command -v $PYENV &>/dev/null; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
@@ -144,12 +145,10 @@ if [ "$1" != "" ]; then
   fi
 
   # Test python after install
-  if ! command -v pyenv &>/dev/null; then
+  if ! command -v $PYENV &>/dev/null; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
-
-  $PYENV=$(which pyenv)
 
   #########################################
   ###    Installing python version     ###
@@ -286,8 +285,7 @@ if [ "$1" != "" ]; then
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
 
   # Register agent to crontab
-  PYTHON_PATH=$(cd $INSTALLATION_PATH && pyenv which python3)
-  cronlines="*/3 * * * * $PYTHON_PATH $INSTALLATION_PATH/hectoragent.py > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
+  cronlines="*/3 * * * * bash $INSTALLATION_PATH/run.sh > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   ########################
@@ -316,6 +314,6 @@ unset INSTALLATION_PATH
 unset USER
 unset API_ENDPOINT
 unset PYTHON_VERSION
-unset $PYENV
+unset PYENV
 
 exit 0
