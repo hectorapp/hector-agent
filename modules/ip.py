@@ -30,7 +30,7 @@ class ip:
 
       if output:
         data = {
-          'ip': output.decode("utf-8").strip(),
+          'ip': output.decode("utf-8").strip().strip('"'),
           'is_private': private,
         }
 
@@ -41,7 +41,7 @@ class ip:
 
   def public_ip(self):
     # Using a DNS server to retrieve the public IP
-    return self._exec_command_ip('dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com'.strip('"'), False)
+    return self._exec_command_ip('dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com', False)
 
   def private_ip(self):
     command = ''
@@ -52,7 +52,7 @@ class ip:
     else:
       command = "hostname -I | awk '{ print $1 }'"
 
-    return self._exec_command_ip(command.strip('"'), True)
+    return self._exec_command_ip(command, True)
 
   def collect_ips(self):
     # Collect public ip 
