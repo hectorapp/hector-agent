@@ -27,7 +27,7 @@ COLOR_ORANGE='\033[93m'
 INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
-PYTHON_VERSION=`3.7.3`
+PYTHON_VERSION="3.7.3"
 
 #############################
 ### FUNCTIONS DECLARATION ###
@@ -80,7 +80,7 @@ if [ "$1" != "" ]; then
   ### Installing pyenv if not installed ###
   ##########################################
 
-  if [ ! -d "$HOME/.pyenv" ]; then
+  if [ ! -n "$(command -v pyenv)" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
@@ -146,16 +146,9 @@ if [ "$1" != "" ]; then
     echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
   fi &&
 
-  if [ ! -d "$HOME/.pyenv" ]; then
+  if [ ! -n "$(command -v pyenv)" ]; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
-  fi
-
-  # Load pyenv after install
-  PYENV=$(which pyenv | sed 's/[[:blank:]]//g')
-
-  if [ -z ${PYENV} ]; then
-    PYENV=`~/.pyenv/bin/pyenv`
   fi
 
   #########################################
@@ -169,15 +162,14 @@ if [ "$1" != "" ]; then
     if [ $osx_version == "Mojave" ]
     then
       echo -e "${COLOR_ORANGE}Installing sdk-headers for osx... (to prevents build failed with python multi-versions)${COLOR_NC}";
-      installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+      #installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
     fi
   fi
 
   echo -e "${COLOR_ORANGE}Installing Python $PYTHON_VERSION... ${COLOR_NC}";
-  $PYENV install $PYTHON_VERSION
+  exec $(pyenv install $PYTHON_VERSION)
   # Set python local version
-  cd $INSTALLATION_PATH
-  $PYENV `local` $PYTHON_VERSION
+  cd $INSTALLATION_PATH && exec $(pyenv local $PYTHON_VERSION)
 
   #########################################
   ### Installing pip3 if not installed ###
@@ -325,6 +317,5 @@ unset INSTALLATION_PATH
 unset USER
 unset API_ENDPOINT
 unset PYTHON_VERSION
-unset PYENV
 
 exit 0
