@@ -44,16 +44,19 @@ fi
 #############################
 ### FUNCTIONS DECLARATION ###
 #############################
+install_pyenv_variables () {
+  export PATH="~/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+}
+
 install_pyenv_linux_distribution () {
   # Download pyenv
   PROJ=pyenv-installer
   SCRIPT_URL=https://github.com/pyenv/$PROJ/raw/master/bin/$PROJ
   curl -L $SCRIPT_URL < /dev/null | bash
-  
-  # Setup it
-  export PATH="~/.pyenv/bin:$PATH"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+
+  install_pyenv_variables
 }
 
 #############################
@@ -143,9 +146,7 @@ if [ "$1" != "" ]; then
 			echo -e "${COLOR_ORANGE}Installing pyenv through 'brew'...${COLOR_NC}"
 
 		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv git
-      export PATH="~/.pyenv/bin:$PATH"
-      eval "$(pyenv init -)"
-      eval "$(pyenv virtualenv-init -)"
+      install_pyenv_variables
 		fi
   else
     echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
@@ -191,7 +192,7 @@ if [ "$1" != "" ]; then
     fi
 
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
-    rm get-pip.py
+    rm -rf get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
@@ -262,7 +263,7 @@ if [ "$1" != "" ]; then
   # Copy the content of uncompressed archive into /opt/hector-agent and remove it
   cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
   # Remove hector-install.sh (useless, already installed)
-  rm hector-install.sh
+  rm -rf hector-install.sh
   
   echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
   echo -e "";
