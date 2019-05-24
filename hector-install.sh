@@ -29,14 +29,6 @@ USER="hectoragent"
 API_ENDPOINT="https://hectorapi.valentinhutter.ch"
 PYTHON_VERSION="3.7.3"
 
-# Loading pyenv
-pyenv_pre=$(which pyenv)
-
-if [ $pyenv_pre="$HOME/.pyenv/bin/pyenv" ]
-  then PYENV=$pyenv_pre
-  else PYENV="$HOME/.pyenv/bin/pyenv"
-fi
-
 #############################
 ### FUNCTIONS DECLARATION ###
 #############################
@@ -87,7 +79,9 @@ if [ "$1" != "" ]; then
   ############################################
   ### Installing pyenv if not installed ###
   ##########################################
-  if [ -z ${PYENV+x} ] || [ ! command -v $PYENV &>/dev/null ]; then
+  pyenv_check=$(which pyenv | sed 's/[[:blank:]]//g')
+
+  if [ -z "${pyenv_check}" ]; then
     # Debian, Ubuntu, etc.
     if [ -n "$(command -v apt-get)" ]
 		then
@@ -151,10 +145,10 @@ if [ "$1" != "" ]; then
 		fi
   else
     echo -e "${COLOR_GREEN}Pyenv is already installed!${COLOR_NC}";
-  fi
+  fi &&
 
   # Test python after install
-  if [ -z ${PYENV+x} ] || [ ! command -v $PYENV &>/dev/null ]; then
+  if [ -z "${pyenv_check}" ]; then
     echo -e "${COLOR_RED}Unable to install pyenv, please restart the installation script or install pyenv manually!${COLOR_NC}";
     exit 1
   fi
