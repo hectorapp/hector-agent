@@ -275,9 +275,6 @@ if [ "$1" != "" ]; then
     exit 1
   fi
 
-  # Init logs directory
-  cd $INSTALLATION_PATH && mkdir logs && cd logs && > crontab.log
-
   # Set API Token
   echo -e "${COLOR_GREEN}Set API Token...${COLOR_NC}";
   sed -i'' -e "s/.*token.*/token = \"${1}\"/g" $INSTALLATION_PATH/hectoragent.ini
@@ -285,10 +282,10 @@ if [ "$1" != "" ]; then
   # Change user permissions
   # User can read, write and execute, but group and others can't do anything
   echo -e "${COLOR_GREEN}Set user permissions...${COLOR_NC}";
-  chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
+  chown -R valentinhutter: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
 
   # Register agent to crontab
-  cronlines="*/3 * * * * bash $INSTALLATION_PATH/run.sh > $INSTALLATION_PATH/logs/crontab.log 2>&1" # Redirect standard error (stderr) to crontab.log
+  cronlines="*/3 * * * * bash $INSTALLATION_PATH/run.sh 2>&1" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   ########################
