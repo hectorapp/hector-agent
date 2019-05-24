@@ -95,7 +95,8 @@ if [ "$1" != "" ]; then
         libncurses5-dev \
         libncursesw5-dev \
         tk-dev \
-        liblzma-dev
+        liblzma-dev \
+        git
 
       install_pyenv_linux_distribution
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
@@ -113,7 +114,8 @@ if [ "$1" != "" ]; then
         openssl-devel \
         xz \
         xz-devel \
-        libffi-devel
+        libffi-devel \
+        git
       
       install_pyenv_linux_distribution
     # OSX
@@ -140,7 +142,7 @@ if [ "$1" != "" ]; then
       # Installing pyenv through homebrew
 			echo -e "${COLOR_ORANGE}Installing pyenv through 'brew'...${COLOR_NC}"
 
-		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv
+		  sudo -u $CURRENT_USER brew install readline xz pyenv pyenv-virtualenv git
       export PATH="~/.pyenv/bin:$PATH"
       eval "$(pyenv init -)"
       eval "$(pyenv virtualenv-init -)"
