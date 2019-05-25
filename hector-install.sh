@@ -70,12 +70,22 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get install gcc -y
+      apt-get install gcc python3-dev -y
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
       yum -y install gcc
+
+      # Fedora install python3-dev
+      if [ -n "$(command --version dnf)" ]
+      then
+        dnf install python3-devel -y
+      # openSUSE
+      elif [ -n "$(command --version zypper)" ]
+      then
+        zypper in python3-devel -n
+      fi
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
