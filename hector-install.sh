@@ -70,16 +70,16 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get install gcc python3-dev zlib1g-dev libffi-dev -y
+      apt-get install gcc python3-dev zlib1g-dev libffi-dev openssl -y
     # Fedora
     elif [ -n "$(command --version dnf)" ]
     then
-      dnf install gcc python3-devel zlib zlib-devel libffi-devel -y
+      dnf install gcc python3-devel zlib zlib-devel libffi-devel openssl-devel -y
     # CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y install gcc zlib zlib-devel libffi-dev
+      yum -y install gcc zlib zlib-devel libffi-dev openssl-devel
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -107,11 +107,12 @@ if [ "$1" != "" ]; then
 		fi
 
     # Installing python from sources
+    mkdir /tmp/Python37 &&
+    cd /tmp/Python37 &&
     wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz &&
     tar xfv Python-3.7.3.tar.xz &&
-    rm -rf Python-3.7.3.tar.xz &&
     cd Python-3.7.3 &&
-    CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes &&
+    CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes --with-ssl &&
     make &&
     sudo make install &&
     chmod -v 755 /usr/local/lib/libpython3.7m.so &&
