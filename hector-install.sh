@@ -72,7 +72,7 @@ if [ "$1" != "" ]; then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
       apt-get install gcc python3-dev zlib1g-dev libffi-dev -y
     # Fedora
-    if [ -n "$(command --version dnf)" ]
+    elif [ -n "$(command --version dnf)" ]
     then
       dnf install gcc python3-devel zlib zlib-devel libffi-devel -y
     # CentOS, etc. Red Hat Enterprise Linux
