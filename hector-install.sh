@@ -134,8 +134,87 @@ if [ "$1" != "" ]; then
     exit 1
   fi
 
+  ############################################
+  ###         Installing crontab          ###
+  ##########################################
+  if [ ! -n "$(command -v crontab)" ]
+  then
+    # Ask user to confirm crontab installation (required)
+    read -p "Crontab is not installed, but is required to run hector. Would you like to install it? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      #
+      # Install crontab
+      #
+
+      # Debian, Ubuntu, etc.
+      if [ -n "$(command -v apt-get)" ]
+      then
+        echo -e "${COLOR_ORANGE}[REQUIRED]${COLOR_NC} Installing cron through 'apt-get'...";
+        apt-get -y update
+        apt-get -y install cron
+      # Fedora, CentOS, etc. Red Hat Enterprise Linux
+      elif [ -n "$(command -v yum)" ]
+      then
+        echo -e "${COLOR_ORANGE}[REQUIRED]${COLOR_NC} Installing cronie through 'yum'...";
+        yum -y install cronie
+          
+        # Cronie-vixie installation if the crontab is still not available after the cronie installation
+        if [ ! -n "$(command -v crontab)" ]
+        then
+          echo -e "${COLOR_ORANGE}[REQUIRED]${COLOR_NC} Installing vixie-cron through 'yum'...";
+          yum -y install vixie-cron
+        fi
+      fi
+    fi
+    
+    # Test crontab install after installation
+    if [ ! -n "$(command -v crontab)" ]
+    then
+      echo -e "${COLOR_RED}Unable to install crontab, but it is required. Please install it manually and restart the script.${COLOR_NC}"
+      exit 1
+    fi	
+  fi
+
+  ############################################
+  ###          Starting crontab           ###
+  ##########################################
+  # Check if cron is running
+  if [ -z "$(ps -Al | grep cron | grep -v grep)" ]
+  then
+    # Ask user to confirm crontab start (required)
+    read -p "Crontab is installed, but not started. Hector needs it to work. Do you confirm the start? [y/n] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      #
+      # Starting crontab
+      #
+      echo -e "${COLOR_ORANGE}Starting crontab....${COLOR_NC}";
+      
+      # Debian, Ubuntu, etc.
+      if [ -n "$(command -v apt-get)" ]
+      then
+        service cron start
+      # Fedora, CentOS, etc. Red Hat Enterprise Linux
+      elif [ -n "$(command -v yum)" ]
+      then
+        chkconfig crond on
+        service crond start
+      fi
+    fi
+    
+    # Checks that the start of crontab has worked well
+    if [ -z "$(ps -Al | grep cron | grep -v grep)" ]
+    then
+      echo -e "${COLOR_RED}Unable to start the crontab, please try again or start it manually, then restart the installation script...${COLOR_NC}"
+      exit 1
+    fi
+  fi
+
   #########################################
-  ###          Install dig             ###
+  ###          Installing dig          ###
   #######################################
   if ! command -v dig &>/dev/null; then
     echo -e "${COLOR_ORANGE}Installing dig...${COLOR_NC}";
