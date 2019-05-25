@@ -71,16 +71,54 @@ if [ "$1" != "" ]; then
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
       apt-get update
-      apt-get install gcc python3-dev zlib1g-dev libffi-dev openssl -y
+      apt-get install -y \
+        gcc \
+        build-essential \
+        checkinstall \
+        libreadline-gplv2-dev \
+        libncursesw5-dev \
+        libssl-dev \
+        libsqlite3-dev \
+        tk-dev \
+        libgdbm-dev \
+        libc6-dev \
+        libbz2-dev \
+        zlib1g-dev \
+        openssl \
+        libssl-dev \
+        libffi-dev \
+        python3-dev \
+        python3-setuptools \
+        wget
     # Fedora
     elif [ -n "$(command --version dnf)" ]
     then
-      dnf install gcc python3-devel zlib zlib-devel libffi-devel openssl-devel -y
+      dnf install -y \
+        gcc \
+        openssl-devel \
+        bzip2-devel \
+        expat-devel \
+        gdbm-devel \
+        readline-devel \
+        sqlite-devel \
+        zlib \
+        zlib-devel \
+        libffi-devel
     # CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y install gcc zlib zlib-devel libffi-dev openssl-devel
+      yum -y \
+        gcc \
+        openssl-devel \
+        bzip2-devel \
+        expat-devel \
+        gdbm-devel \
+        readline-devel \
+        sqlite-devel \
+        zlib \
+        zlib-devel \
+        libffi-devel
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
