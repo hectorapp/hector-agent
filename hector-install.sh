@@ -39,7 +39,9 @@ if [ $(id -u) != "0" ]; then
   exit 1;
 fi
 
+#################
 ### INSTALLER ###
+#################
 if [ "$1" != "" ]; then
   echo -e "${COLOR_ORANGE}Downloading agent to ${INSTALLATION_PATH}...${COLOR_NC}";
 
@@ -122,30 +124,6 @@ if [ "$1" != "" ]; then
     exit 1
   fi
 
-  
-  #########################################
-  ### Installing pip3 if not installed ###
-  #######################################
-  : '
-  if ! command -V pip3 &>/dev/null; then
-    echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
-
-    # Debian, Ubuntu, etc.
-    if [ -n "$(command -v apt-get)" ]
-		then
-      apt-get install gcc python3-dev -y
-    # Fedora, CentOS, etc. Red Hat Enterprise Linux
-		elif [ -n "$(command -v yum)" ]
-		then
-      yum install -y gcc python3-devel zlib-devel
-    fi
-
-    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && /usr/local/bin/python3.7 get-pip.py
-  else
-    echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
-  fi
-  '
-  
   #########################################
   ###          Install dig             ###
   #######################################
@@ -159,7 +137,7 @@ if [ "$1" != "" ]; then
     # Fedora, CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
-      yum -y install yum install bind-utils
+      yum -y install bind-utils
     elif [[ "$OSTYPE" == "darwin"* ]]
 		then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
