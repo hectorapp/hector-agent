@@ -70,6 +70,7 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
+      apt-get update
       apt-get install gcc python3-dev zlib1g-dev libffi-dev openssl -y
     # Fedora
     elif [ -n "$(command --version dnf)" ]
@@ -107,7 +108,7 @@ if [ "$1" != "" ]; then
 		fi
 
     # Installing python from sources
-    mkdir /tmp/Python37 &&
+    mkdir -p /tmp/Python37 &&
     cd /tmp/Python37 &&
     wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz &&
     tar xfv Python-3.7.3.tar.xz &&
