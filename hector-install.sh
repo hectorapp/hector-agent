@@ -70,22 +70,16 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-      apt-get install gcc python3-dev -y
-    # Fedora, CentOS, etc. Red Hat Enterprise Linux
+      apt-get install gcc python3-dev zlib1g-dev libffi-dev -y
+    # Fedora
+    if [ -n "$(command --version dnf)" ]
+    then
+      dnf install gcc python3-devel zlib zlib-devel libffi-devel -y
+    # CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y install gcc
-
-      # Fedora install python3-dev
-      if [ -n "$(command --version dnf)" ]
-      then
-        dnf install python3-devel -y
-      # openSUSE
-      elif [ -n "$(command --version zypper)" ]
-      then
-        zypper in python3-devel -n
-      fi
+      yum -y install gcc zlib zlib-devel libffi-dev
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
@@ -116,14 +110,14 @@ if [ "$1" != "" ]; then
     wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz &&
     tar xfv Python-3.7.3.tar.xz &&
     cd Python-3.7.3 &&
+    sed -i '/^#.* zlib zlibmodule.c /s/^#//' /Modules/Setup && # Enable zlib module
     CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes &&
     make &&
     sudo make install &&
     chmod -v 755 /usr/local/lib/libpython3.7m.so &&
     chmod -v 755 /usr/local/lib/libpython3.so &&
     cd .. &&
-    rm -rf Python-3.7.3.tar.xz &&
-    Python-3.7.3
+    rm -rf Python-3.7.3.tar.xz
   else
     echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
   fi
@@ -192,7 +186,7 @@ if [ "$1" != "" ]; then
       # Starting crontab
       #
       echo -e "${COLOR_ORANGE}Starting crontab....${COLOR_NC}";
-      
+
       # Debian, Ubuntu, etc.
       if [ -n "$(command -v apt-get)" ]
       then
@@ -234,6 +228,18 @@ if [ "$1" != "" ]; then
     fi
   else
     echo -e "${COLOR_GREEN}dig is already installed!${COLOR_NC}";
+  fi
+
+  #########################################
+  ### Installing pip3 if not installed ###
+  #######################################
+  if ! command -V /usr/local/bin/python3.7 -m pip &>/dev/null; then
+    echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
+
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && /usr/local/bin/python3.7 get-pip.py
+    rm -rf get-pip.py
+  else
+    echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
 
   # Retrieves the agent from the github repository and install it
