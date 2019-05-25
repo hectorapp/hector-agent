@@ -109,15 +109,13 @@ if [ "$1" != "" ]; then
     # Installing python from sources
     wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz &&
     tar xfv Python-3.7.3.tar.xz &&
+    rm -rf Python-3.7.3.tar.xz &&
     cd Python-3.7.3 &&
-    sed -i '/^#.* zlib zlibmodule.c /s/^#//' /Modules/Setup && # Enable zlib module
     CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes &&
     make &&
     sudo make install &&
     chmod -v 755 /usr/local/lib/libpython3.7m.so &&
-    chmod -v 755 /usr/local/lib/libpython3.so &&
-    cd .. &&
-    rm -rf Python-3.7.3.tar.xz
+    chmod -v 755 /usr/local/lib/libpython3.so
   else
     echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
   fi
