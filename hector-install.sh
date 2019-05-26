@@ -14,6 +14,7 @@
 #   - Edit crontab from script: https://askubuntu.com/questions/880052/how-can-i-change-crontab-dynamically
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
 #   - no acceptable C compiler found in $PATH when installing python : https://stackoverflow.com/questions/19816275/no-acceptable-c-compiler-found-in-path-when-installing-python
+#   - Install python from source : https://gist.github.com/jerodg/f66257934158a6292dea840e15b3adb2
 ########################################################################
 
 ### COLORS ###
@@ -111,7 +112,7 @@ if [ "$1" != "" ]; then
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
       yum -y groupinstall "Development Tools"
-      yum -y \
+      yum install -y \
         gcc \
         openssl-devel \
         bzip2-devel \
@@ -157,6 +158,11 @@ if [ "$1" != "" ]; then
     CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes --with-ssl &&
     make &&
     sudo make install &&
+    strip "/usr/local/lib/libpython3.7m.so.1.0" &&
+    echo 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib' >> /etc/profile.d/python.sh &&
+    echo 'export PATH=${PATH}:~/usr/local/bin/' >> /etc/profile.d/python.sh &&
+    echo '/usr/local/lib' >> /etc/ld.so.conf &&
+    ldconfig &&
     chmod -v 755 /usr/local/lib/libpython3.7m.so &&
     chmod -v 755 /usr/local/lib/libpython3.so
   else
