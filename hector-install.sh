@@ -5,7 +5,7 @@
 # Date : 15.05.2019
 # Description : Diploma work - Hector agent monitoring - Installer
 # School : CFPT-I, Geneva, T.IS-E2 A
-# Help :
+# Reference :
 #   - Using sed to replace text: https://stackoverflow.com/questions/11245144/replace-whole-line-containing-a-string-using-sed
 #   - Create users on OSX:
 #       - https://apple.stackexchange.com/questions/274954/cannot-create-a-user-account-on-mac-using-command-line
@@ -13,6 +13,7 @@
 #   - Explain chmod in detail: https://www.poftut.com/chmod-755-700/
 #   - Edit crontab from script: https://askubuntu.com/questions/880052/how-can-i-change-crontab-dynamically
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
+#   - no acceptable C compiler found in $PATH when installing python : https://stackoverflow.com/questions/19816275/no-acceptable-c-compiler-found-in-path-when-installing-python
 ########################################################################
 
 ### COLORS ###
@@ -93,6 +94,7 @@ if [ "$1" != "" ]; then
     # Fedora
     elif [ -n "$(command --version dnf)" ]
     then
+      yum -y groupinstall "Development Tools"
       dnf install -y \
         gcc \
         openssl-devel \
@@ -108,6 +110,7 @@ if [ "$1" != "" ]; then
 		elif [ -n "$(command -v yum)" ]
 		then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
+      yum -y groupinstall "Development Tools"
       yum -y \
         gcc \
         openssl-devel \
