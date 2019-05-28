@@ -91,7 +91,8 @@ if [ "$1" != "" ]; then
         libffi-dev \
         python3-dev \
         python3-setuptools \
-        wget
+        wget \
+        sysstat
     # Fedora
     elif [ -n "$(command --version dnf)" ]
     then
@@ -106,7 +107,8 @@ if [ "$1" != "" ]; then
         sqlite-devel \
         zlib \
         zlib-devel \
-        libffi-devel
+        libffi-devel \
+        sysstat
     # CentOS, etc. Red Hat Enterprise Linux
 		elif [ -n "$(command -v yum)" ]
 		then
@@ -122,7 +124,8 @@ if [ "$1" != "" ]; then
         sqlite-devel \
         zlib \
         zlib-devel \
-        libffi-devel
+        libffi-devel \
+        sysstat
     # OSX
 		elif [[ "$OSTYPE" == "darwin"* ]]
 		then
