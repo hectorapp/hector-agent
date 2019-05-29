@@ -15,6 +15,7 @@
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
 #   - no acceptable C compiler found in $PATH when installing python : https://stackoverflow.com/questions/19816275/no-acceptable-c-compiler-found-in-path-when-installing-python
 #   - Install python from source : https://gist.github.com/jerodg/f66257934158a6292dea840e15b3adb2
+#   - Getting Pip working for Python 3.7 on Rasbian : https://medium.com/@dblume/getting-pip-working-for-python-3-7-on-rasbian-f414d9d526d0
 ########################################################################
 
 ### COLORS ###
@@ -72,6 +73,16 @@ if [ "$1" != "" ]; then
     if [ -n "$(command -v apt-get)" ]
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
+
+      if [ $(lsb_release -c | awk {'print $2'}) == "jessie*" ]; then
+        echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list
+        apt-get source openssl/jessie-backports &&
+        cd openssl-1.0.2k/ &&
+        ./config --prefix=/usr &&
+        make &&
+        sudo make install &&
+      fi
+
       apt-get update
       apt-get install -y \
         gcc \
