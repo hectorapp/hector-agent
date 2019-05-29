@@ -22,7 +22,7 @@ class ping:
     data = {}
     servers = {
       'us': 'google.com',
-      'ch': '0.ch.pool.ntp.org'
+      'ch': 'valentinhutter.ch'
     }
 
     for region, host in servers.items():
