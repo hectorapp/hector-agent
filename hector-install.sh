@@ -74,13 +74,14 @@ if [ "$1" != "" ]; then
 		then
 			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
 
-      if [ $(lsb_release -c | awk {'print $2'}) == "jessie*" ]; then
-        echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list
+      if [ $(lsb_release -c | awk {'print $2'}) == "jessie*" ]
+      then
+        echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list &&
         apt-get source openssl/jessie-backports &&
         cd openssl-1.0.2k/ &&
         ./config --prefix=/usr &&
         make &&
-        sudo make install &&
+        sudo make install
       fi
 
       apt-get update
