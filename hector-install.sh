@@ -373,6 +373,9 @@ if [ "$1" != "" ]; then
   cronlines="*/3 * * * * /usr/local/bin/python3.7 $INSTALLATION_PATH/hectoragent.py" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
+  # Give ping permissions
+	chmod +s `type -p ping`
+
   ########################
   # Sucessful installation
   ########################
