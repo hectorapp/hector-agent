@@ -15,7 +15,7 @@
 #   - Get the name of the user who executed a bash script as sudo?: https://unix.stackexchange.com/questions/137175/how-to-get-the-name-of-the-user-who-executed-a-bash-script-as-sudo
 #   - no acceptable C compiler found in $PATH when installing python : https://stackoverflow.com/questions/19816275/no-acceptable-c-compiler-found-in-path-when-installing-python
 #   - Install python from source : https://gist.github.com/jerodg/f66257934158a6292dea840e15b3adb2
-#   - Getting Pip working for Python 3.7 on Rasbian : https://medium.com/@dblume/getting-pip-working-for-python-3-7-on-rasbian-f414d9d526d0
+#   - Getting Pip working for Python 2.7 / 3.x on Rasbian : https://medium.com/@dblume/getting-pip-working-for-python-3-7-on-rasbian-f414d9d526d0
 ########################################################################
 
 ### COLORS ###
@@ -65,129 +65,17 @@ if [ "$1" != "" ]; then
   mkdir -p $INSTALLATION_PATH
   echo -e "";
 
-  ############################################
-  ### Installing python3 if not installed ###
-  ##########################################
-  if ! command -V /usr/local/bin/python3.7 &>/dev/null; then
-    # Debian, Ubuntu, etc.
-    if [ -n "$(command -v apt-get)" ]
-		then
-			echo -e "${COLOR_ORANGE}Installing python3 through 'apt-get'...${COLOR_NC}";
-
-      if [ $(lsb_release -c | awk {'print $2'}) == "jessie*" ]
-      then
-        echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list &&
-        apt-get source openssl/jessie-backports &&
-        cd openssl-1.0.2k/ &&
-        ./config --prefix=/usr &&
-        make &&
-        sudo make install
-      fi
-
+  if [ -n "$(command -v apt-get)" ]; then
+      echo -e "${COLOR_ORANGE}Installing dependencies through 'apt-get'...${COLOR_NC}";
       apt-get update
-      apt-get install -y \
-        gcc \
-        build-essential \
-        checkinstall \
-        libreadline-gplv2-dev \
-        libncursesw5-dev \
-        libssl-dev \
-        libsqlite3-dev \
-        tk-dev \
-        libgdbm-dev \
-        libc6-dev \
-        libbz2-dev \
-        zlib1g-dev \
-        openssl \
-        libssl-dev \
-        libffi-dev \
-        python3-dev \
-        python3-setuptools \
-        wget \
-        sysstat
-    # Fedora
-    elif [ -n "$(command --version dnf)" ]
-    then
-      yum -y groupinstall "Development Tools"
-      dnf install -y \
-        gcc \
-        openssl-devel \
-        bzip2-devel \
-        expat-devel \
-        gdbm-devel \
-        readline-devel \
-        sqlite-devel \
-        zlib \
-        zlib-devel \
-        libffi-devel \
-        sysstat
-    # CentOS, etc. Red Hat Enterprise Linux
-		elif [ -n "$(command -v yum)" ]
-		then
+      apt-get install -y wget python python-pip
+  # Fedora
+  elif [ -n "$(command --version dnf)" ]; then
+      dnf install -y wget
+  # CentOS, etc. Red Hat Enterprise Linux
+  elif [ -n "$(command -v yum)" ]; then
       echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum -y groupinstall "Development Tools"
-      yum install -y \
-        gcc \
-        openssl-devel \
-        bzip2-devel \
-        expat-devel \
-        gdbm-devel \
-        readline-devel \
-        sqlite-devel \
-        zlib \
-        zlib-devel \
-        libffi-devel \
-        sysstat
-    # OSX
-		elif [[ "$OSTYPE" == "darwin"* ]]
-		then
-      # Retrieves the username of the user who executed the script as root to launch 
-      # the Homebrew installation as non-root (required for security reasons)
-      CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
-
-      if [ ! -n "$(command -v brew)" ]; then
-        echo -e "${COLOR_ORANGE}Installing homebrew...${COLOR_NC}";
-  
-        # Homebrew require xcode packages, so install it
-        if [ ! -n "$(command -v xcode-select)" ]; then
-          echo -e "${COLOR_ORANGE}Installing Apple’s Xcode package...${COLOR_NC}";
-          xcode-select --install
-          echo -e "${COLOR_GREEN}Apple’s Xcode package is now installed!${COLOR_NC}";
-        fi
-        
-        sudo -u $CURRENT_USER /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null # Redirect to /dev/null to prevent prompt
-        echo -e "${COLOR_ORANGE}Homebrew is now installed!${COLOR_NC}"
-      fi
-
-      # Installing python3 through homebrew
-			echo -e "${COLOR_ORANGE}Installing python3 through 'brew'...${COLOR_NC}"
-		  sudo -u $CURRENT_USER brew install gcc
-		fi
-
-    # Installing python from sources
-    mkdir -p /tmp/Python37 &&
-    cd /tmp/Python37 &&
-    wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz &&
-    tar xfv Python-3.7.3.tar.xz &&
-    cd Python-3.7.3 &&
-    CXX="/usr/bin/g++" ./configure --prefix=/usr/local --enable-shared --with-ensurepip=yes --with-ssl &&
-    make &&
-    sudo make install &&
-    strip "/usr/local/lib/libpython3.7m.so.1.0" &&
-    echo 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib' >> /etc/profile.d/python.sh &&
-    echo 'export PATH=${PATH}:~/usr/local/bin/' >> /etc/profile.d/python.sh &&
-    echo '/usr/local/lib' >> /etc/ld.so.conf &&
-    ldconfig &&
-    chmod -v 755 /usr/local/lib/libpython3.7m.so &&
-    chmod -v 755 /usr/local/lib/libpython3.so
-  else
-    echo -e "${COLOR_GREEN}Python is already installed!${COLOR_NC}";
-  fi
-
-  # Test python after install
-  if ! command -V /usr/local/bin/python3.7 &>/dev/null; then
-    echo -e "${COLOR_RED}Unable to install python3, please restart the installation script or install python3 manually!${COLOR_NC}";
-    exit 1
+      yum install -y wget
   fi
 
   ############################################
@@ -215,7 +103,6 @@ if [ "$1" != "" ]; then
       then
         echo -e "${COLOR_ORANGE}[REQUIRED]${COLOR_NC} Installing cronie through 'yum'...";
         yum -y install cronie
-          
         # Cronie-vixie installation if the crontab is still not available after the cronie installation
         if [ ! -n "$(command -v crontab)" ]
         then
@@ -295,10 +182,9 @@ if [ "$1" != "" ]; then
   #########################################
   ### Installing pip3 if not installed ###
   #######################################
-  if ! command -V /usr/local/bin/python3.7 -m pip &>/dev/null; then
+  if ! command -V python -m pip &>/dev/null; then
     echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
-
-    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && /usr/local/bin/python3.7 get-pip.py
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python get-pip.py
     rm -rf get-pip.py
   else
     echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
@@ -312,16 +198,17 @@ if [ "$1" != "" ]; then
   install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
   # Copy the content of uncompressed archive into /opt/hector-agent and remove it
   cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
+
   # Remove hector-install.sh (useless, already installed)
   rm hector-install.sh
-  
+
   echo -e "${COLOR_GREEN}Agent downloaded!${COLOR_NC}";
   echo -e "";
 
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
-    /usr/local/bin/python3.7 -m pip install -r requirements.txt && 
+    pip install -r requirements.txt && 
     echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
     echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
@@ -370,7 +257,7 @@ if [ "$1" != "" ]; then
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
   
   # Register agent to crontab
-  cronlines="*/3 * * * * /usr/local/bin/python3.7 $INSTALLATION_PATH/hectoragent.py" # Redirect standard error (stderr) to crontab.log
+  cronlines="*/3 * * * * /usr/bin/python $INSTALLATION_PATH/hectoragent.py" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   # Give ping permissions
