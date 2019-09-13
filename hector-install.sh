@@ -71,11 +71,28 @@ if [ "$1" != "" ]; then
       apt-get install -y wget python python-pip
   # Fedora
   elif [ -n "$(command --version dnf)" ]; then
-      dnf install -y wget
+      dnf install -y wget python
   # CentOS, etc. Red Hat Enterprise Linux
   elif [ -n "$(command -v yum)" ]; then
-      echo -e "${COLOR_ORANGE}Installing python3 through 'yum'...${COLOR_NC}";
-      yum install -y wget
+      echo -e "${COLOR_ORANGE}Installing dependencies through 'yum'...${COLOR_NC}";
+      yum install -y wget python
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+      CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
+      if [ ! -n "$(command -v brew)" ]; then
+        echo -e "${COLOR_ORANGE}Installing homebrew...${COLOR_NC}";
+        # Homebrew require xcode packages, so install it
+        if [ ! -n "$(command -v xcode-select)" ]; then
+          echo -e "${COLOR_ORANGE}Installing Apple’s Xcode package...${COLOR_NC}";
+          xcode-select --install
+          echo -e "${COLOR_GREEN}Apple’s Xcode package is now installed!${COLOR_NC}";
+        fi
+        sudo -u $CURRENT_USER /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null # Redirect to /dev/null to prevent prompt
+        echo -e "${COLOR_ORANGE}Homebrew is now installed!${COLOR_NC}"
+      fi
+      # Installing python through homebrew
+      echo -e "${COLOR_ORANGE}Installing python through 'brew'...${COLOR_NC}"
+      sudo -u $CURRENT_USER brew install python
+      sudo -u $CURRENT_USER brew install wget
   fi
 
   ############################################
@@ -111,13 +128,12 @@ if [ "$1" != "" ]; then
         fi
       fi
     fi
-    
     # Test crontab install after installation
     if [ ! -n "$(command -v crontab)" ]
     then
       echo -e "${COLOR_RED}Unable to install crontab, but it is required. Please install it manually and restart the script.${COLOR_NC}"
       exit 1
-    fi	
+    fi
   fi
 
   ############################################
@@ -147,7 +163,6 @@ if [ "$1" != "" ]; then
         service crond start
       fi
     fi
-    
     # Checks that the start of crontab has worked well
     if [ -z "$(ps -Al | grep cron | grep -v grep)" ]
     then
