@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 '''
  * Author : Hutter Valentin
@@ -47,9 +47,9 @@ class HectorAgent:
 
   # Collect and sendit to API
   def collect_data(self):
-    if os.path.exists('./hectoragent.ini'):
+    if os.path.exists('/opt/hector-agent/hectoragent.ini'):
       config = configparser.ConfigParser()
-      config.read('hectoragent.ini') # Loading configuration
+      config.read('/opt/hector-agent/hectoragent.ini') # Loading configuration
       token = config['API']['token'].strip('"') # Get token from .ini configuration
       is_agent_installed = config['GENERAL'].getboolean('installed')
       
