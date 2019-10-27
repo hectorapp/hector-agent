@@ -3,8 +3,7 @@
 '''
  * Author : Hutter Valentin
  * Date : 08.05.2019
- * Description : Diploma work - Hector agent monitoring
- * School : CFPT-I, Geneva, T.IS-E2 A
+ * Description : Hector agent monitoring
  * Help : ANSI color from https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-terminal-in-python
 '''
 
