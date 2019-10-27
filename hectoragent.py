@@ -3,8 +3,7 @@
 '''
  * Author : Hutter Valentin
  * Date : 08.05.2019
- * Description : Diploma work - Hector agent monitoring
- * School : CFPT-I, Geneva, T.IS-E2 A
+ * Description : Hector agent monitoring
  * Help :
  *  - Requests: https://2.python-requests.org/en/master/
 '''

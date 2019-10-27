@@ -4,8 +4,7 @@
 '''
  * Author : Hutter Valentin
  * Date : 14.05.2019
- * Description : Diploma work - Hector agent monitoring
- * School : CFPT-I, Geneva, T.IS-E2 A
+ * Description : Hector agent monitoring
  * Help :
     - https://psutil.readthedocs.io/en/latest/#psutil.cpu_times_percent
     - https://psutil.readthedocs.io/en/latest/#psutil.cpu_percent

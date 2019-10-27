@@ -3,8 +3,7 @@
 ########################################################################
 # Author : Hutter Valentin
 # Date : 15.05.2019
-# Description : Diploma work - Hector agent monitoring - Installer
-# School : CFPT-I, Geneva, T.IS-E2 A
+# Description : Hector agent monitoring - Installer
 # Reference :
 #   - Using sed to replace text: https://stackoverflow.com/questions/11245144/replace-whole-line-containing-a-string-using-sed
 #   - Create users on OSX:
