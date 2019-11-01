@@ -195,14 +195,14 @@ if [ "$1" != "" ]; then
   fi
 
   #########################################
-  ### Installing pip3 if not installed ###
+  ### Installing pip if not installed ###
   #######################################
   if ! command -V python -m pip &>/dev/null; then
-    echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
+    echo -e "${COLOR_ORANGE}Installing pip...${COLOR_NC}";
     curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python get-pip.py
     rm -rf get-pip.py
   else
-    echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
+    echo -e "${COLOR_GREEN}pip is already installed!${COLOR_NC}";
   fi
 
   # Retrieves the agent from the github repository and install it
@@ -223,6 +223,7 @@ if [ "$1" != "" ]; then
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
+    python -m pip install --upgrade pip setuptools wheel && # Ensure pip, setuptools, and wheel are up to date
     pip install -r requirements.txt && 
     echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
