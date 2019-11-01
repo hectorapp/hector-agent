@@ -27,7 +27,8 @@ COLOR_ORANGE='\033[93m'
 # Global variables
 INSTALLATION_PATH="/opt/hector-agent"
 USER="hectoragent"
-API_ENDPOINT="https://hectorapi.valentinhutter.ch"
+API_ENDPOINT="https://api.hector.valentinhutter.ch"
+AGENT_TARBALL_URL="https://github.com/hectorapp/hector-agent/tarball/master"
 
 # Welcome text
 echo -e "${COLOR_BLUE}================================="
@@ -205,11 +206,11 @@ if [ "$1" != "" ]; then
   fi
 
   # Retrieves the agent from the github repository and install it
-  cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition https://github.com/valh1996/hector-agent/tarball/master -O hector-agent.tar.gz
+  cd $INSTALLATION_PATH && wget --no-check-certificate --content-disposition $AGENT_TARBALL_URL -O hector-agent.tar.gz
   # Uncompress downloaded agent, and remove tar.gz
   tar -zxvf hector-agent.tar.gz && rm $INSTALLATION_PATH/hector-agent.tar.gz
   # Get the the just downloaded archive name (random)
-  install_dirname=`find $INSTALLATION_PATH -name "valh1996-hector-agent-*" -type d`
+  install_dirname=`find $INSTALLATION_PATH -name "hectorapp-hector-agent-*" -type d`
   # Copy the content of uncompressed archive into /opt/hector-agent and remove it
   cp -a $install_dirname/. $INSTALLATION_PATH && rm -rf $install_dirname
 
