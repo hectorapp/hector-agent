@@ -68,14 +68,14 @@ if [ "$1" != "" ]; then
   if [ -n "$(command -v apt-get)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'apt-get'...${COLOR_NC}";
       apt-get update
-      apt-get install -y wget python python-pip
+      apt-get install -y wget python3 python3-pip
   # Fedora
   elif [ -n "$(command --version dnf)" ]; then
-      dnf install -y wget python
+      dnf install -y wget python3 python3-pip
   # CentOS, etc. Red Hat Enterprise Linux
   elif [ -n "$(command -v yum)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'yum'...${COLOR_NC}";
-      yum install -y wget python
+      yum install -y wget python3 python3-pip
   elif [[ "$OSTYPE" == "darwin"* ]]; then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
       if [ ! -n "$(command -v brew)" ]; then
@@ -91,7 +91,7 @@ if [ "$1" != "" ]; then
       fi
       # Installing python through homebrew
       echo -e "${COLOR_ORANGE}Installing python through 'brew'...${COLOR_NC}"
-      sudo -u $CURRENT_USER brew install python
+      sudo -u $CURRENT_USER brew install python3
       sudo -u $CURRENT_USER brew install wget
   fi
 
@@ -195,14 +195,14 @@ if [ "$1" != "" ]; then
   fi
 
   #########################################
-  ### Installing pip if not installed ###
+  ### Installing pip3 if not installed ###
   #######################################
-  if ! command -V python -m pip &>/dev/null; then
-    echo -e "${COLOR_ORANGE}Installing pip...${COLOR_NC}";
-    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python get-pip.py
+  if ! command -V pip3 &>/dev/null; then
+    echo -e "${COLOR_ORANGE}Installing pip3...${COLOR_NC}";
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" --silent > /dev/null && python3 get-pip.py
     rm -rf get-pip.py
   else
-    echo -e "${COLOR_GREEN}pip is already installed!${COLOR_NC}";
+    echo -e "${COLOR_GREEN}pip3 is already installed!${COLOR_NC}";
   fi
 
   # Retrieves the agent from the github repository and install it
@@ -223,8 +223,8 @@ if [ "$1" != "" ]; then
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
-    python -m pip install --upgrade pip setuptools wheel && # Ensure pip, setuptools, and wheel are up to date
-    pip install -r requirements.txt && 
+    pip3 install --upgrade pip setuptools wheel && # Ensure pip, setuptools, and wheel are up to date
+    pip3 install -r requirements.txt && 
     echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
     echo -e "${COLOR_RED}An error occurred during the installation of the agent, please try again!${COLOR_NC}";
