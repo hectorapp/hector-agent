@@ -68,14 +68,14 @@ if [ "$1" != "" ]; then
   if [ -n "$(command -v apt-get)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'apt-get'...${COLOR_NC}";
       apt-get update
-      apt-get install -y wget python3 python3-pip
+      apt-get install -y wget python3 python3-pip python3-dev
   # Fedora
   elif [ -n "$(command --version dnf)" ]; then
-      dnf install -y wget python3 python3-pip
+      dnf install -y wget python3 python3-pip python3-dev
   # CentOS, etc. Red Hat Enterprise Linux
   elif [ -n "$(command -v yum)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'yum'...${COLOR_NC}";
-      yum install -y wget python3 python3-pip
+      yum install -y wget python3 python3-pip python3-dev
   elif [[ "$OSTYPE" == "darwin"* ]]; then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
       if [ ! -n "$(command -v brew)" ]; then
