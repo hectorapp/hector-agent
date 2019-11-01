@@ -13,4 +13,3 @@ requests
 six
 urllib3
 wrapt
-py2-ipaddress

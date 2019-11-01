@@ -90,7 +90,7 @@ if [ "$1" != "" ]; then
         echo -e "${COLOR_ORANGE}Homebrew is now installed!${COLOR_NC}"
       fi
       # Installing python through homebrew
-      echo -e "${COLOR_ORANGE}Installing python through 'brew'...${COLOR_NC}"
+      echo -e "${COLOR_ORANGE}Installing python3 through 'brew'...${COLOR_NC}"
       sudo -u $CURRENT_USER brew install python3
       sudo -u $CURRENT_USER brew install wget
   fi
@@ -273,7 +273,7 @@ if [ "$1" != "" ]; then
   chown -R $USER: $INSTALLATION_PATH && chmod -R 700 $INSTALLATION_PATH
   
   # Register agent to crontab
-  cronlines="*/3 * * * * /usr/bin/python $INSTALLATION_PATH/hectoragent.py" # Redirect standard error (stderr) to crontab.log
+  cronlines="*/3 * * * * /usr/bin/python3 $INSTALLATION_PATH/hectoragent.py" # Redirect standard error (stderr) to crontab.log
   echo "$cronlines" | crontab -u $USER - # Adding lines to crontab
 
   # Give ping permissions

@@ -11,7 +11,6 @@
 '''
 
 import psutil
-import ipaddress
 import socket
 import sys
 sys.path.insert(0, '..') # to import helpers from parent folder
