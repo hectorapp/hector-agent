@@ -3,7 +3,7 @@
     hectorapp.io is a SAAS application that allows you to keep an eye on the health of your servers and websites at all times.
 </p>
 <p>
-  This software is a distributed agent written in Python, compatible with versions >= 2.7 which aims to collect information from the server so that it can be monitored. The latter has been optimized to consume as few resources (cpu, ram, etc.) as possible.
+  This software is a distributed agent written in Python, compatible with versions >= 3 which aims to collect information from the server so that it can be monitored. The latter has been optimized to consume as few resources (cpu, ram, etc.) as possible.
 </p>
 <p>
   <a href="https://github.com/hectorapp/hector-agent/issues/new">Report bug</a>
