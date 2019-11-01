@@ -223,7 +223,6 @@ if [ "$1" != "" ]; then
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
-    pip3 install --upgrade pip setuptools wheel # Ensure pip, setuptools, and wheel are up to date
     pip3 install -r requirements.txt && 
     echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
