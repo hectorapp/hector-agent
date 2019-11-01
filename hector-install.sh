@@ -68,14 +68,14 @@ if [ "$1" != "" ]; then
   if [ -n "$(command -v apt-get)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'apt-get'...${COLOR_NC}";
       apt-get update
-      apt-get install -y wget python3 python3-pip python3-dev
+      apt-get install -y wget python3 python3-pip python3-dev gcc
   # Fedora
   elif [ -n "$(command --version dnf)" ]; then
-      dnf install -y wget python3 python3-pip python3-dev
+      dnf install -y wget python3 python3-pip python3-dev gcc
   # CentOS, etc. Red Hat Enterprise Linux
   elif [ -n "$(command -v yum)" ]; then
       echo -e "${COLOR_ORANGE}Installing dependencies through 'yum'...${COLOR_NC}";
-      yum install -y wget python3 python3-pip python3-dev
+      yum install -y wget python3 python3-pip python3-dev gcc
   elif [[ "$OSTYPE" == "darwin"* ]]; then
       CURRENT_USER=$(printf '%s\n' "${SUDO_USER:-$USER}")
       if [ ! -n "$(command -v brew)" ]; then
@@ -223,7 +223,7 @@ if [ "$1" != "" ]; then
   # Download agent's python dependencies
   if [ -e $INSTALLATION_PATH/requirements.txt ]; then
     echo -e "Downloading agent dependencies...";
-    pip3 install --upgrade pip setuptools wheel && # Ensure pip, setuptools, and wheel are up to date
+    pip3 install --upgrade pip setuptools wheel # Ensure pip, setuptools, and wheel are up to date
     pip3 install -r requirements.txt && 
     echo -e "${COLOR_GREEN}Dependencies have been downloaded!${COLOR_NC}"
   else
