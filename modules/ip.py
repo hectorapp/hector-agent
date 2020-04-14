@@ -41,6 +41,7 @@ class ip:
             if json:
               result.append({
                 'ip': json['ip'],
+                'is_private': False,
                 'country_code': json['country_code'],
                 'country_name': json['country_name'],
                 'latitude': json['latitude'],
