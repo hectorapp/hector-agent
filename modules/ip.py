@@ -63,13 +63,6 @@ class ip:
 
     return result
 
-  def _is_valid_ipv6_address(address):
-    try:
-        socket.inet_pton(socket.AF_INET6, address)
-    except socket.error:
-        return False
-    return True
-
   def _get_default_nic(self):
     command = ''
 
