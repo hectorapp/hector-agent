@@ -16,10 +16,11 @@ import helpers
 
 class ip:
 
-  def _get_ip_data(self, private = True):
+  def _get_ips_data(self, nic):
+    result = []
     data = {
       'ip': None,
-      'is_private': private,
+      'is_private': False,
       'country_code': None,
       'country_name': None,
       'latitude': None,
@@ -29,53 +30,59 @@ class ip:
     }
 
     try:
-      if private:
-        command = ''
+      params_ip = {
+        'ipv4': '-4',
+        'ipv6': '-6'
+      }
 
-        # Generates command depending on OS
-        if psutil.MACOS:
-          command = 'ipconfig getifaddr en0'
-        else:
-          command = "hostname -I | awk '{ print $1 }'"
+      for key in params_ip:
+        command = 'dig ' + params_ip[key] + ' TXT +short o-o.myaddr.l.google.com @ns1.google.com'
 
-        private_ip = Popen(command, shell=True, stdout=PIPE)
-        output = private_ip.communicate()[0]
-
+        ip = Popen(command, shell=True, stdout=PIPE)
+        output = ip.communicate()[0]
+        
         if output:
-          data['ip'] = output.decode("utf-8").strip().strip('"')
-      else:
-        res = requests.get(url='https://freegeoip.app/json')
-        json = res.json()
+          ip = output.decode("utf-8").strip().strip('"')
 
-        if json:
-          data['ip'] = json['ip']
-          data['country_code'] = json['country_code']
-          data['country_name'] = json['country_name']
-          data['latitude'] = json['latitude']
-          data['longitude'] = json['longitude']
-          data['region_code'] = json['region_code']
-          data['region_name'] = json['region_name']
+          if not any(d['ip'] == ip for d in result):
+            res = requests.get(url='https://freegeoip.app/json/' + ip)
+            json = res.json()
+
+            if json:
+              data['ip'] = json['ip']
+              data['country_code'] = json['country_code']
+              data['country_name'] = json['country_name']
+              data['latitude'] = json['latitude']
+              data['longitude'] = json['longitude']
+              data['region_code'] = json['region_code']
+              data['region_name'] = json['region_name']
+
+            result.append(data)
     except:
       pass
 
-    return data
+    return result
 
-  def public_ip(self):
-    return self._get_ip_data(False)
+  def _is_valid_ipv6_address(address):
+    try:
+        socket.inet_pton(socket.AF_INET6, address)
+    except socket.error:
+        return False
+    return True
 
-  def private_ip(self):
-    return self._get_ip_data(True)
+  def _get_default_nic(self):
+    command = ''
+
+    if psutil.MACOS:
+      command = "route -n get default | grep 'interface:' | grep -o '[^ ]*$'"
+    else:
+      command = "route | grep '^default' | grep -o '[^ ]*$'"
+
+    nic = Popen(command, shell=True, stdout=PIPE)
+    output = nic.communicate()[0]
+
+    return output.decode("utf-8").strip().strip('"')
 
   def collect_ips(self):
-    # Collect public ip 
-    public_ip = []
-    public_ip.append(self.public_ip())
-
-    # Collect private ips
-    private_ip = []
-    private_ip.append(self.private_ip())
-
-    # Merge public and private ips together
-    ips = public_ip + private_ip
-
-    return ips
+    # Collect ips data
+    return self._get_ips_data(self._get_default_nic())
