@@ -18,16 +18,6 @@ class ip:
 
   def _get_ips_data(self, nic):
     result = []
-    data = {
-      'ip': None,
-      'is_private': False,
-      'country_code': None,
-      'country_name': None,
-      'latitude': None,
-      'longitude': None,
-      'region_code': None,
-      'region_name': None
-    }
 
     try:
       params_ip = {
@@ -49,15 +39,15 @@ class ip:
             json = res.json()
 
             if json:
-              data['ip'] = json['ip']
-              data['country_code'] = json['country_code']
-              data['country_name'] = json['country_name']
-              data['latitude'] = json['latitude']
-              data['longitude'] = json['longitude']
-              data['region_code'] = json['region_code']
-              data['region_name'] = json['region_name']
-
-            result.append(data)
+              result.append({
+                'ip': json['ip'],
+                'country_code': json['country_code'],
+                'country_name': json['country_name'],
+                'latitude': json['latitude'],
+                'longitude': json['longitude'],
+                'region_code': json['region_code'],
+                'region_name': json['region_name']
+              })
     except:
       pass
 
